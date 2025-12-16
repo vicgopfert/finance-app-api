@@ -1,6 +1,6 @@
 import 'dotenv/config.js'
 import express from 'express'
-import { pool } from './src/db/postgres/client.js'
+import { pool } from './src/db/postgres/helper.js'
 
 const app = express()
 

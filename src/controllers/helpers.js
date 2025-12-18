@@ -12,3 +12,8 @@ export const serverError = (body) => ({
     statusCode: 500,
     body,
 })
+
+export const ok = (body) => ({
+    statusCode: 200,
+    body,
+})

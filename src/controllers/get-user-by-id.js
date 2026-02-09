@@ -1,4 +1,9 @@
-import { badRequest, ok, serverError } from './helpers.js'
+import {
+    badRequest,
+    ok,
+    serverError,
+    notFound,
+} from '../controllers/helpers.js'
 import { GetUserByIdUseCase } from '../use-cases/get-user-by-id.js'
 import validator from 'validator'
 
@@ -8,15 +13,20 @@ export class GetUserByIdController {
             const userId = httpRequest.params.id
             const isIdValid = validator.isUUID(userId)
             if (!isIdValid) {
-                return badRequest({ message: 'O ID fornecido é inválido.' })
+                return badRequest({ message: 'The provided ID is invalid.' })
             }
 
             const getUserByIdUseCase = new GetUserByIdUseCase()
             const user = await getUserByIdUseCase.execute(userId)
+
+            if (!user) {
+                return notFound({ message: 'User not found.' })
+            }
+
             return ok(user)
         } catch (error) {
-            console.error('Erro ao obter usuário por ID:', error)
-            return serverError({ message: 'Erro interno do servidor' })
+            console.error('Error getting user by ID:', error)
+            return serverError({ message: 'Internal server error' })
         }
     }
 }

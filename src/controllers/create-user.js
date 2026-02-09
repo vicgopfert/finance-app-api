@@ -1,5 +1,6 @@
 import { CreateUserUseCase } from '../use-cases/create-user.js'
 import { badRequest, created, serverError } from './helpers.js'
+import { EmailAlreadyInUseError } from '../errors/user.js'
 import validator from 'validator'
 
 export class CreateUserController {
@@ -28,14 +29,14 @@ export class CreateUserController {
 
             if (!passwordIsValid) {
                 return badRequest({
-                    message: 'A senha deve ter no mínimo 6 caracteres.',
+                    message: 'Password must be at least 6 characters long.',
                 })
             }
 
             const emailIsValid = validator.isEmail(params.email)
 
             if (!emailIsValid) {
-                return badRequest({ message: 'O email fornecido é inválido.' })
+                return badRequest({ message: 'The provided email is invalid.' })
             }
 
             // chamar o use case
@@ -44,12 +45,15 @@ export class CreateUserController {
 
             // retornar a resposta para o usuário (status code)
             return created({
-                message: 'Usuário criado com sucesso',
+                message: 'User created successfully',
                 user: createdUser,
             })
         } catch (error) {
-            console.error('Erro ao criar usuário:', error)
-            return serverError({ message: 'Erro interno do servidor' })
+            if (error instanceof EmailAlreadyInUseError) {
+                return badRequest({ message: error.message })
+            }
+            console.error('Error creating user:', error)
+            return serverError({ message: 'Internal server error' })
         }
     }
 }

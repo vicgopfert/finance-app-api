@@ -1,5 +1,5 @@
 import { CreateUserUseCase } from '../use-cases/create-user.js'
-import { badRequest, created, serverError } from './helpers.js'
+import { badRequest, created, serverError } from '../controllers/helpers.js'
 import { EmailAlreadyInUseError } from '../errors/user.js'
 import validator from 'validator'
 

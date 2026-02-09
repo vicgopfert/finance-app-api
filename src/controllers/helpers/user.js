@@ -23,3 +23,5 @@ export const checkIfPasswordIsValid = (password) =>
     password && password.trim().length >= 6
 
 export const checkIfEmailIsValid = (email) => validator.isEmail(email)
+
+export const checkIfIdIsValid = (id) => validator.isUUID(id)

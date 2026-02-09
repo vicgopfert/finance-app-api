@@ -1,6 +1,7 @@
 import bcrypt from 'bcrypt'
-import { PostgresGetUserByEmailRepository } from '../repositories/postgres/get-user-by-id'
-import { PostgresUpdateUserRepository } from '../repositories/postgres/update-user'
+import { PostgresGetUserByEmailRepository } from '../repositories/postgres/get-user-by-email.js'
+import { PostgresUpdateUserRepository } from '../repositories/postgres/update-user.js'
+import { badRequest } from '../controllers/helpers.js'
 
 export class UpdateUserUseCase {
     async execute(userId, updateUserParams) {
@@ -14,7 +15,7 @@ export class UpdateUserUseCase {
                 )
 
             if (userWithProvidedEmail) {
-                throw new Error('Email já cadastrado')
+                throw new badRequest({ message: 'Email already registered' })
             }
         }
 

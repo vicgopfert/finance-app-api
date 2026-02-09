@@ -1,4 +1,5 @@
 import { UpdateUserUseCase } from '../use-cases/index.js'
+import { EmailAlreadyInUseError } from '../errors/user.js'
 import {
     checkIfEmailIsValid,
     checkIfIdIsValid,
@@ -9,6 +10,7 @@ import {
     badRequest,
     ok,
     serverError,
+    userNotFoundResponse,
 } from './helpers/index.js'
 
 export class UpdateUserController {
@@ -59,8 +61,19 @@ export class UpdateUserController {
 
             const updateUserUseCase = new UpdateUserUseCase()
             const updatedUser = await updateUserUseCase.execute(userId, params)
-            return ok(updatedUser)
+
+            if (!updatedUser) {
+                return userNotFoundResponse()
+            }
+
+            return ok({
+                message: 'User updated successfully',
+                user: updatedUser,
+            })
         } catch (error) {
+            if (error instanceof EmailAlreadyInUseError) {
+                return badRequest({ message: error.message })
+            }
             console.error('Error validating update user request:', error)
             return serverError({ message: 'Internal server error' })
         }

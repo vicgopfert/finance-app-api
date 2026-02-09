@@ -3,7 +3,7 @@ import {
     PostgresGetUserByEmailRepository,
     PostgresUpdateUserRepository,
 } from '../repositories/postgres/index.js'
-import { badRequest } from '../controllers/helpers/http.js'
+import { EmailAlreadyInUseError } from '../errors/user.js'
 
 export class UpdateUserUseCase {
     async execute(userId, updateUserParams) {
@@ -16,8 +16,8 @@ export class UpdateUserUseCase {
                     updateUserParams.email,
                 )
 
-            if (userWithProvidedEmail) {
-                throw new badRequest({ message: 'Email already registered' })
+            if (userWithProvidedEmail && userWithProvidedEmail.id !== userId) {
+                throw new EmailAlreadyInUseError(updateUserParams.email)
             }
         }
 

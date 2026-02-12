@@ -5,7 +5,7 @@ import {
     created,
     invalidIdResponse,
     serverError,
-} from '../helpers'
+} from '../helpers/index.js'
 
 export class CreateTransactionController {
     constructor(createTransactionUseCase) {
@@ -14,16 +14,9 @@ export class CreateTransactionController {
 
     async execute(httpRequest) {
         try {
-            const params = httpRequest.params
+            const params = httpRequest.body
 
-            const requiredFields = [
-                'id',
-                'userId',
-                'name',
-                'date',
-                'amount',
-                'type',
-            ]
+            const requiredFields = ['user_id', 'name', 'date', 'amount', 'type']
 
             for (const field of requiredFields) {
                 if (
@@ -36,23 +29,32 @@ export class CreateTransactionController {
                 }
             }
 
-            const userIdIsValid = checkIfIdIsValid(params.userId)
+            const userIdIsValid = checkIfIdIsValid(params.user_id)
 
             if (!userIdIsValid) {
-                return invalidIdResponse(params.userId)
+                return invalidIdResponse(params.user_id)
             }
 
             if (params.amount <= 0) {
                 return badRequest({ message: 'Amount must be greater than 0.' })
             }
 
+            const hasMoreThanTwoDecimals = !Number.isInteger(
+                params.amount * 100,
+            )
+
+            if (hasMoreThanTwoDecimals) {
+                return badRequest({
+                    message: 'Amount must have at most 2 decimal places.',
+                })
+            }
+
             const amountIsValid = validator.isCurrency(
-                params.amount.toString(),
+                params.amount.toFixed(2),
                 {
-                    digits_after_decimal: 2,
+                    digits_after_decimal: [2],
                     allow_negatives: false,
                     decimal_separator: '.',
-                    thousands_separator: ',',
                 },
             )
 

@@ -1,9 +1,13 @@
-import validator from 'validator'
 import {
-    badRequest,
+    checkIfAmountIsValid,
+    checkIfHasMoreThanTwoDecimals,
     checkIfIdIsValid,
+    checkIfTypeIsValid,
     created,
+    invalidAmountDecimalsResponse,
+    invalidAmountResponse,
     invalidIdResponse,
+    invalidTypeResponse,
     requiredFieldIsMissingResponse,
     serverError,
     validateRequiredFields,
@@ -33,42 +37,26 @@ export class CreateTransactionController {
                 return invalidIdResponse(params.user_id)
             }
 
-            const hasMoreThanTwoDecimals = !Number.isInteger(
-                params.amount * 100,
+            const hasMoreThanTwoDecimals = checkIfHasMoreThanTwoDecimals(
+                params.amount,
             )
 
             if (hasMoreThanTwoDecimals) {
-                return badRequest({
-                    message: 'Amount must have at most 2 decimal places.',
-                })
+                return invalidAmountDecimalsResponse(params.amount)
             }
 
-            const amountIsValid = validator.isCurrency(
-                params.amount.toFixed(2),
-                {
-                    digits_after_decimal: [2],
-                    allow_negatives: false,
-                    decimal_separator: '.',
-                },
-            )
+            const amountIsValid = checkIfAmountIsValid(params.amount)
 
             if (!amountIsValid) {
-                return badRequest({
-                    message: 'Amount must be a valid currency value.',
-                })
+                return invalidAmountResponse(params.amount)
             }
 
             const type = params.type.toUpperCase()
 
-            const typeIsValid = ['EARNING', 'EXPENSE', 'INVESTMENT'].includes(
-                type,
-            )
+            const typeIsValid = checkIfTypeIsValid(type)
 
             if (!typeIsValid) {
-                return badRequest({
-                    message:
-                        'Type must be one of EARNING, EXPENSE, or INVESTMENT.',
-                })
+                return invalidTypeResponse(params.type)
             }
 
             const transaction = await this.createTransactionUseCase.execute({

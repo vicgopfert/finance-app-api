@@ -1,5 +1,5 @@
 import validator from 'validator'
-import { badRequest } from './http.js'
+import { badRequest, notFound } from './http.js'
 
 export const checkIfAmountIsValid = (amount) => {
     if (typeof amount !== 'number' || isNaN(amount)) {
@@ -35,5 +35,11 @@ export const checkIfHasMoreThanTwoDecimals = (amount) =>
 export const invalidAmountDecimalsResponse = (amount) => {
     return badRequest({
         message: `The provided amount ${amount} is invalid. Amount must have at most 2 decimal places.`,
+    })
+}
+
+export const transactionNotFoundResponse = () => {
+    return notFound({
+        message: `Transaction not found.`,
     })
 }

@@ -66,7 +66,7 @@ export class UpdateTransactionController {
                 transaction: updatedTransaction,
             })
         } catch (error) {
-            console.error(error)
+            console.error('Error updating transaction:', error)
             return serverError()
         }
     }

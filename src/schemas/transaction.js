@@ -22,3 +22,7 @@ export const createTransactionSchema = z.object({
         .number('Amount must be a number')
         .min(0.01, { message: 'Amount must be greater than 0' }),
 })
+
+export const updateTransactionSchema = createTransactionSchema
+    .partial()
+    .strict('Some provided field is not allowed to be updated')

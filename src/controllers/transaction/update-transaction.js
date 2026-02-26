@@ -1,14 +1,13 @@
+import { updateTransactionSchema } from '../../schemas/transaction.js'
 import {
     badRequest,
-    checkIfAmountIsValid,
     checkIfIdIsValid,
-    checkIfTypeIsValid,
-    invalidAmountResponse,
     invalidIdResponse,
-    invalidTypeResponse,
     ok,
     serverError,
 } from '../helpers/index.js'
+
+import { z } from 'zod'
 
 export class UpdateTransactionController {
     constructor(updateTransactionUseCase) {
@@ -27,33 +26,7 @@ export class UpdateTransactionController {
 
             const params = httpRequest.body
 
-            const allowedFields = ['name', 'date', 'amount', 'type']
-
-            const someFieldIsNotAllowed = Object.keys(params).some(
-                (field) => !allowedFields.includes(field),
-            )
-
-            if (someFieldIsNotAllowed) {
-                return badRequest({
-                    message: 'Some provided field is not allowed to be updated',
-                })
-            }
-
-            if (params.amount) {
-                const amountIsValid = checkIfAmountIsValid(params.amount)
-
-                if (!amountIsValid) {
-                    return invalidAmountResponse(params.amount)
-                }
-            }
-
-            if (params.type) {
-                const typeIsValid = checkIfTypeIsValid(params.type)
-
-                if (!typeIsValid) {
-                    return invalidTypeResponse(params.type)
-                }
-            }
+            await updateTransactionSchema.parseAsync(params)
 
             const updatedTransaction =
                 await this.updateTransactionUseCase.execute(
@@ -66,8 +39,24 @@ export class UpdateTransactionController {
                 transaction: updatedTransaction,
             })
         } catch (error) {
+            if (error instanceof z.ZodError) {
+                const unrecognizedKeysError = error.issues.find(
+                    (issue) => issue.code === 'unrecognized_keys',
+                )
+
+                if (unrecognizedKeysError) {
+                    return badRequest({
+                        message:
+                            'Some provided field is not allowed to be updated',
+                    })
+                }
+
+                return badRequest({
+                    message: error.issues[0].message,
+                })
+            }
             console.error('Error updating transaction:', error)
-            return serverError()
+            return serverError({ message: 'Internal server error' })
         }
     }
 }

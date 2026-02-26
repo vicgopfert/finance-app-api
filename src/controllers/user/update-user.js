@@ -1,16 +1,15 @@
 import { EmailAlreadyInUseError } from '../../errors/user.js'
+import { updateUserSchema } from '../../schemas/user.js'
 import {
-    checkIfEmailIsValid,
     checkIfIdIsValid,
-    checkIfPasswordIsValid,
-    invalidEmailResponse,
     invalidIdResponse,
-    invalidPasswordResponse,
     badRequest,
     ok,
     serverError,
     userNotFoundResponse,
 } from '../helpers/index.js'
+
+import { z } from 'zod'
 
 export class UpdateUserController {
     constructor(updateUserUseCase) {
@@ -29,41 +28,12 @@ export class UpdateUserController {
 
             const params = httpRequest.body
 
-            const allowedFields = [
-                'first_name',
-                'last_name',
-                'email',
-                'password',
-            ]
+            await updateUserSchema.parseAsync(params)
 
-            const someFieldIsNotAllowed = Object.keys(params).some(
-                (field) => !allowedFields.includes(field),
+            const updatedUser = await this.updateUserUseCase.execute(
+                userId,
+                params,
             )
-
-            if (someFieldIsNotAllowed) {
-                return badRequest({
-                    message: 'Some provided field is not allowed to be updated',
-                })
-            }
-
-            if (params.password) {
-                const passwordIsValid = checkIfPasswordIsValid(params.password)
-
-                if (!passwordIsValid) {
-                    return invalidPasswordResponse()
-                }
-            }
-
-            if (params.email) {
-                const emailIsValid = checkIfEmailIsValid(params.email)
-
-                if (!emailIsValid) {
-                    return invalidEmailResponse(params.email)
-                }
-            }
-
-            const updateUserUseCase = this.updateUserUseCase
-            const updatedUser = await updateUserUseCase.execute(userId, params)
 
             if (!updatedUser) {
                 return userNotFoundResponse()
@@ -74,6 +44,22 @@ export class UpdateUserController {
                 user: updatedUser,
             })
         } catch (error) {
+            if (error instanceof z.ZodError) {
+                const unrecognizedKeysError = error.issues.find(
+                    (issue) => issue.code === 'unrecognized_keys',
+                )
+
+                if (unrecognizedKeysError) {
+                    return badRequest({
+                        message:
+                            'Some provided field is not allowed to be updated',
+                    })
+                }
+
+                return badRequest({
+                    message: error.issues[0].message,
+                })
+            }
             if (error instanceof EmailAlreadyInUseError) {
                 return badRequest({ message: error.message })
             }

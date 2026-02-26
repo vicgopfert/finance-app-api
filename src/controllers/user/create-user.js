@@ -15,8 +15,7 @@ export class CreateUserController {
 
             await createUserSchema.parseAsync(params)
 
-            const createUserUseCase = this.createUserUseCase
-            const createdUser = await createUserUseCase.execute(params)
+            const createdUser = await this.createUserUseCase.execute(params)
 
             return created({
                 message: 'User created successfully',

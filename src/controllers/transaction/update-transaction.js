@@ -5,6 +5,7 @@ import {
     invalidIdResponse,
     ok,
     serverError,
+    transactionNotFoundResponse,
 } from '../helpers/index.js'
 
 import { z } from 'zod'
@@ -33,6 +34,10 @@ export class UpdateTransactionController {
                     transactionId,
                     params,
                 )
+
+            if (!updatedTransaction) {
+                return transactionNotFoundResponse(transactionId)
+            }
 
             return ok({
                 message: 'Transaction updated successfully',

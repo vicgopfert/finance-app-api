@@ -1,15 +1,8 @@
 import { EmailAlreadyInUseError } from '../../errors/user.js'
-import {
-    checkIfEmailIsValid,
-    checkIfPasswordIsValid,
-    invalidEmailResponse,
-    invalidPasswordResponse,
-    badRequest,
-    created,
-    serverError,
-    validateRequiredFields,
-    requiredFieldIsMissingResponse,
-} from '../helpers/index.js'
+import { createUserSchema } from '../../schemas/index.js'
+import { badRequest, created, serverError } from '../helpers/index.js'
+
+import { z } from 'zod'
 
 export class CreateUserController {
     constructor(createUserUseCase) {
@@ -20,31 +13,7 @@ export class CreateUserController {
         try {
             const params = httpRequest.body
 
-            const requiredFields = [
-                'first_name',
-                'last_name',
-                'email',
-                'password',
-            ]
-
-            const { ok: requiredFieldsWereProvided, missingField } =
-                validateRequiredFields(params, requiredFields)
-
-            if (!requiredFieldsWereProvided) {
-                return requiredFieldIsMissingResponse(missingField)
-            }
-
-            const passwordIsValid = checkIfPasswordIsValid(params.password)
-
-            if (!passwordIsValid) {
-                return invalidPasswordResponse()
-            }
-
-            const emailIsValid = checkIfEmailIsValid(params.email)
-
-            if (!emailIsValid) {
-                return invalidEmailResponse(params.email)
-            }
+            await createUserSchema.parseAsync(params)
 
             const createUserUseCase = this.createUserUseCase
             const createdUser = await createUserUseCase.execute(params)
@@ -54,6 +23,11 @@ export class CreateUserController {
                 user: createdUser,
             })
         } catch (error) {
+            if (error instanceof z.ZodError) {
+                return badRequest({
+                    message: error.issues[0].message,
+                })
+            }
             if (error instanceof EmailAlreadyInUseError) {
                 return badRequest({ message: error.message })
             }

@@ -1,17 +1,7 @@
-import {
-    checkIfAmountIsValid,
-    checkIfHasMoreThanTwoDecimals,
-    checkIfIdIsValid,
-    checkIfTypeIsValid,
-    created,
-    invalidAmountDecimalsResponse,
-    invalidAmountResponse,
-    invalidIdResponse,
-    invalidTypeResponse,
-    requiredFieldIsMissingResponse,
-    serverError,
-    validateRequiredFields,
-} from '../helpers/index.js'
+import { createTransactionSchema } from '../../schemas/transaction.js'
+import { badRequest, created, serverError } from '../helpers/index.js'
+
+import { z } from 'zod'
 
 export class CreateTransactionController {
     constructor(createTransactionUseCase) {
@@ -22,46 +12,11 @@ export class CreateTransactionController {
         try {
             const params = httpRequest.body
 
-            const requiredFields = ['user_id', 'name', 'date', 'amount', 'type']
-
-            const { ok: requiredFieldsWereProvided, missingField } =
-                validateRequiredFields(params, requiredFields)
-
-            if (!requiredFieldsWereProvided) {
-                return requiredFieldIsMissingResponse(missingField)
-            }
-
-            const userIdIsValid = checkIfIdIsValid(params.user_id)
-
-            if (!userIdIsValid) {
-                return invalidIdResponse(params.user_id)
-            }
-
-            const hasMoreThanTwoDecimals = checkIfHasMoreThanTwoDecimals(
-                params.amount,
-            )
-
-            if (hasMoreThanTwoDecimals) {
-                return invalidAmountDecimalsResponse(params.amount)
-            }
-
-            const amountIsValid = checkIfAmountIsValid(params.amount)
-
-            if (!amountIsValid) {
-                return invalidAmountResponse(params.amount)
-            }
-
-            const type = params.type.toUpperCase()
-
-            const typeIsValid = checkIfTypeIsValid(type)
-
-            if (!typeIsValid) {
-                return invalidTypeResponse(params.type)
-            }
+            await createTransactionSchema.parseAsync(params)
 
             const transaction = await this.createTransactionUseCase.execute({
                 ...params,
-                type,
+                type: params.type.toUpperCase(),
             })
 
             return created({
@@ -69,6 +24,11 @@ export class CreateTransactionController {
                 transaction,
             })
         } catch (error) {
+            if (error instanceof z.ZodError) {
+                return badRequest({
+                    message: error.issues[0].message,
+                })
+            }
             console.error('Error creating transaction:', error)
             return serverError({ message: 'Internal server error' })
         }

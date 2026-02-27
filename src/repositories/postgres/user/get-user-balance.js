@@ -40,10 +40,10 @@ export class PostgresGetUserBalanceRepository {
         const balance = earnings.minus(expenses).minus(investments)
 
         return {
-            earnings: earnings.toNumber(),
-            expenses: expenses.toNumber(),
-            investments: investments.toNumber(),
-            balance: balance.toNumber(),
+            earnings: earnings,
+            expenses: expenses,
+            investments: investments,
+            balance: balance,
         }
     }
 }

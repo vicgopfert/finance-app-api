@@ -4,6 +4,6 @@ export default {
     clearMocks: true,
     collectCoverage: false,
     coverageDirectory: 'coverage',
-    testMatch: ['**/tests/**/*.test.js'],
+    testMatch: ['**/src/**/*.test.js'],
     verbose: true,
 }

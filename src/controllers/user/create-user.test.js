@@ -31,4 +31,96 @@ describe('Create User Controller', () => {
         )
         expect(result.body).toHaveProperty('user', httpRequest.body)
     })
+
+    it('should returns 400 if first_name is not provided', async () => {
+        const createUserUseCaseStub = new CreateUserUseCaseStub()
+        const createUserController = new CreateUserController(
+            createUserUseCaseStub,
+        )
+
+        const httpRequest = {
+            body: {
+                last_name: 'Doe',
+                email: 'john.doe@example.com',
+                password: 'password123',
+            },
+        }
+
+        const result = await createUserController.execute(httpRequest)
+
+        expect(result.statusCode).toBe(400)
+        expect(result.body).toHaveProperty(
+            'message',
+            'The field first_name is not provided.',
+        )
+    })
+
+    it('should returns 400 if last_name is not provided', async () => {
+        const createUserUseCaseStub = new CreateUserUseCaseStub()
+        const createUserController = new CreateUserController(
+            createUserUseCaseStub,
+        )
+
+        const httpRequest = {
+            body: {
+                first_name: 'John',
+                email: 'john.doe@example.com',
+                password: 'password123',
+            },
+        }
+
+        const result = await createUserController.execute(httpRequest)
+
+        expect(result.statusCode).toBe(400)
+        expect(result.body).toHaveProperty(
+            'message',
+            'The field last_name is not provided.',
+        )
+    })
+
+    it('should returns 400 if email is not provided', async () => {
+        const createUserUseCaseStub = new CreateUserUseCaseStub()
+        const createUserController = new CreateUserController(
+            createUserUseCaseStub,
+        )
+
+        const httpRequest = {
+            body: {
+                first_name: 'John',
+                last_name: 'Doe',
+                password: 'password123',
+            },
+        }
+
+        const result = await createUserController.execute(httpRequest)
+
+        expect(result.statusCode).toBe(400)
+        expect(result.body).toHaveProperty(
+            'message',
+            'The field email is not provided.',
+        )
+    })
+
+    it('should returns 400 if password is not provided', async () => {
+        const createUserUseCaseStub = new CreateUserUseCaseStub()
+        const createUserController = new CreateUserController(
+            createUserUseCaseStub,
+        )
+
+        const httpRequest = {
+            body: {
+                first_name: 'John',
+                last_name: 'Doe',
+                email: 'john.doe@example.com',
+            },
+        }
+
+        const result = await createUserController.execute(httpRequest)
+
+        expect(result.statusCode).toBe(400)
+        expect(result.body).toHaveProperty(
+            'message',
+            'The field password is not provided.',
+        )
+    })
 })

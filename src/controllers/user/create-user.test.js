@@ -1,5 +1,6 @@
 import { faker } from '@faker-js/faker'
 import { CreateUserController } from './create-user.js'
+import { EmailAlreadyInUseError } from '../../errors/user.js'
 
 describe('Create User Controller', () => {
     class CreateUserUseCaseStub {
@@ -148,6 +149,37 @@ describe('Create User Controller', () => {
         expect(result.body).toHaveProperty(
             'message',
             'Please provide a valid email address',
+        )
+    })
+
+    // Status 500 when email is already in use
+    it('should returns 500 if CreateUserUseCase throws EmailIsAlreadyInUse error', async () => {
+        const createUserUseCaseStub = new CreateUserUseCaseStub()
+        const createUserController = new CreateUserController(
+            createUserUseCaseStub,
+        )
+
+        const httpRequest = {
+            body: {
+                first_name: faker.person.firstName(),
+                last_name: faker.person.lastName(),
+                email: faker.internet.email(),
+                password: faker.internet.password({ length: 7 }),
+            },
+        }
+
+        jest.spyOn(createUserUseCaseStub, 'execute').mockImplementationOnce(
+            () => {
+                throw new EmailAlreadyInUseError(httpRequest.body.email)
+            },
+        )
+
+        const result = await createUserController.execute(httpRequest)
+
+        expect(result.statusCode).toBe(400)
+        expect(result.body).toHaveProperty(
+            'message',
+            `Email ${httpRequest.body.email} is already in use.`,
         )
     })
 

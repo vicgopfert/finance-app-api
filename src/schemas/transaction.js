@@ -2,16 +2,27 @@ import { z } from 'zod'
 
 export const createTransactionSchema = z.object({
     user_id: z
-        .string()
+        .string({
+            message: 'The field user_id is not provided.',
+        })
         .min(1, { message: 'User ID is required' })
         .uuid({ message: 'Invalid user ID format' }),
-    name: z.string().trim().min(1, { message: 'Name is required' }),
+    name: z
+        .string({
+            message: 'The field name is not provided.',
+        })
+        .trim()
+        .min(1, { message: 'Name is required' }),
     date: z
-        .string()
+        .string({
+            message: 'The field date is not provided.',
+        })
         .min(1, { message: 'Date is required' })
         .datetime({ message: 'Invalid date format' }),
     type: z
-        .string()
+        .string({
+            message: 'The field type is not provided.',
+        })
         .min(1, { message: 'Type is required' })
         .transform((val) => val.toUpperCase())
         .refine((val) => ['EXPENSE', 'EARNING', 'INVESTMENT'].includes(val), {

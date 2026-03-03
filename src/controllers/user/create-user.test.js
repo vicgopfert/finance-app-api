@@ -19,7 +19,7 @@ describe('Create User Controller', () => {
                 first_name: faker.person.firstName(),
                 last_name: faker.person.lastName(),
                 email: faker.internet.email(),
-                password: faker.internet.password(7),
+                password: faker.internet.password({ length: 7 }),
             },
         }
 
@@ -44,7 +44,7 @@ describe('Create User Controller', () => {
             body: {
                 last_name: faker.person.lastName(),
                 email: faker.internet.email(),
-                password: faker.internet.password(7),
+                password: faker.internet.password({ length: 7 }),
             },
         }
 
@@ -67,7 +67,7 @@ describe('Create User Controller', () => {
             body: {
                 first_name: faker.person.firstName(),
                 email: faker.internet.email(),
-                password: faker.internet.password(7),
+                password: faker.internet.password({ length: 7 }),
             },
         }
 
@@ -90,7 +90,7 @@ describe('Create User Controller', () => {
             body: {
                 first_name: faker.person.firstName(),
                 last_name: faker.person.lastName(),
-                password: faker.internet.password(7),
+                password: faker.internet.password({ length: 7 }),
             },
         }
 
@@ -138,7 +138,7 @@ describe('Create User Controller', () => {
                 first_name: faker.person.firstName(),
                 last_name: faker.person.lastName(),
                 email: 'invalid-email',
-                password: faker.internet.password(7),
+                password: faker.internet.password({ length: 7 }),
             },
         }
 
@@ -188,7 +188,7 @@ describe('Create User Controller', () => {
                 first_name: faker.person.firstName(),
                 last_name: faker.person.lastName(),
                 email: faker.internet.email(),
-                password: faker.internet.password(7),
+                password: faker.internet.password({ length: 7 }),
             },
         }
 
@@ -197,5 +197,32 @@ describe('Create User Controller', () => {
         await createUserController.execute(httpRequest)
 
         expect(executeSpy).toHaveBeenCalledWith(httpRequest.body)
+    })
+
+    it('should returns 500 if CreateUserUseCase throws', async () => {
+        const createUserUseCaseStub = new CreateUserUseCaseStub()
+        const createUserController = new CreateUserController(
+            createUserUseCaseStub,
+        )
+
+        const httpRequest = {
+            body: {
+                first_name: faker.person.firstName(),
+                last_name: faker.person.lastName(),
+                email: faker.internet.email(),
+                password: faker.internet.password({ length: 7 }),
+            },
+        }
+
+        jest.spyOn(createUserUseCaseStub, 'execute').mockImplementationOnce(
+            () => {
+                throw new Error()
+            },
+        )
+
+        const result = await createUserController.execute(httpRequest)
+
+        expect(result.statusCode).toBe(500)
+        expect(result.body).toHaveProperty('message', 'Internal server error')
     })
 })

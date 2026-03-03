@@ -6,4 +6,8 @@ export default {
     coverageDirectory: 'coverage',
     testMatch: ['**/src/**/*.test.js'],
     verbose: true,
+    transform: {
+        '^.+\\.js$': 'babel-jest',
+    },
+    transformIgnorePatterns: [],
 }

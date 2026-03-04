@@ -54,4 +54,28 @@ describe('Delete User Controller', () => {
             'The provided ID invalid-id is invalid.',
         )
     })
+
+    it('should returns 404 if user is not found', async () => {
+        const { sut, deleteUserUseCase } = makeSut()
+
+        jest.spyOn(deleteUserUseCase, 'execute').mockReturnValue(null)
+
+        const result = await sut.execute(httpRequest)
+
+        expect(result.statusCode).toBe(404)
+        expect(result.body).toHaveProperty('message', 'User not found.')
+    })
+
+    it('should returns 500 if DeleteUserUseCase throws', async () => {
+        const { sut, deleteUserUseCase } = makeSut()
+
+        jest.spyOn(deleteUserUseCase, 'execute').mockImplementationOnce(() => {
+            throw new Error()
+        })
+
+        const result = await sut.execute(httpRequest)
+
+        expect(result.statusCode).toBe(500)
+        expect(result.body).toHaveProperty('message', 'Internal server error')
+    })
 })

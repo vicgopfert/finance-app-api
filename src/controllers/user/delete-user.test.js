@@ -37,6 +37,7 @@ describe('Delete User Controller', () => {
             'message',
             'User deleted successfully',
         )
+        expect(result.body).toHaveProperty('user')
     })
 
     it('should returns 400 if id is invalid', async () => {

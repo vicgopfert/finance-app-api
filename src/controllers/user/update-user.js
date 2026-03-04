@@ -1,4 +1,4 @@
-import { EmailAlreadyInUseError } from '../../errors/user.js'
+import { EmailAlreadyInUseError, UserNotFoundError } from '../../errors/user.js'
 import { updateUserSchema } from '../../schemas/user.js'
 import {
     checkIfIdIsValid,
@@ -6,7 +6,7 @@ import {
     badRequest,
     ok,
     serverError,
-    userNotFoundResponse,
+    notFound,
 } from '../helpers/index.js'
 
 import { z } from 'zod'
@@ -35,10 +35,6 @@ export class UpdateUserController {
                 params,
             )
 
-            if (!updatedUser) {
-                return userNotFoundResponse()
-            }
-
             return ok({
                 message: 'User updated successfully',
                 user: updatedUser,
@@ -60,9 +56,15 @@ export class UpdateUserController {
                     message: error.issues[0].message,
                 })
             }
+
+            if (error instanceof UserNotFoundError) {
+                return notFound({ message: error.message })
+            }
+
             if (error instanceof EmailAlreadyInUseError) {
                 return badRequest({ message: error.message })
             }
+
             console.error('Error validating update user request:', error)
             return serverError({ message: 'Internal server error' })
         }

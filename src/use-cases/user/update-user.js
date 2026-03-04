@@ -1,5 +1,5 @@
 import bcrypt from 'bcrypt'
-import { EmailAlreadyInUseError } from '../../errors/user.js'
+import { EmailAlreadyInUseError, UserNotFoundError } from '../../errors/user.js'
 
 export class UpdateUserUseCase {
     constructor(getUserByEmailRepository, updateUserRepository) {
@@ -31,8 +31,14 @@ export class UpdateUserUseCase {
             user.password = hashedPassword
         }
 
-        const updateUserRepository = this.updateUserRepository
-        const updatedUser = await updateUserRepository.execute(userId, user)
+        const updatedUser = await this.updateUserRepository.execute(
+            userId,
+            user,
+        )
+
+        if (!updatedUser) {
+            throw new UserNotFoundError(userId)
+        }
 
         return updatedUser
     }

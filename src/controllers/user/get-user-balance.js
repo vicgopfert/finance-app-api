@@ -2,9 +2,9 @@ import { UserNotFoundError } from '../../errors/user.js'
 import {
     checkIfIdIsValid,
     invalidIdResponse,
+    notFound,
     ok,
     serverError,
-    userNotFoundResponse,
 } from '../helpers/index.js'
 
 export class GetUserBalanceController {
@@ -27,10 +27,10 @@ export class GetUserBalanceController {
             return ok(balance)
         } catch (error) {
             if (error instanceof UserNotFoundError) {
-                return userNotFoundResponse()
+                return notFound({ message: error.message })
             }
             console.error('Error getting user balance:', error)
-            serverError({ message: 'Internal server error' })
+            return serverError({ message: 'Internal server error' })
         }
     }
 }

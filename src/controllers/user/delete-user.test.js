@@ -40,7 +40,7 @@ describe('Delete User Controller', () => {
         expect(result.body).toHaveProperty('user')
     })
 
-    it('should returns 400 if id is invalid', async () => {
+    it('should returns 400 if user id is invalid', async () => {
         const { sut } = makeSut()
 
         const result = await sut.execute({
@@ -59,7 +59,7 @@ describe('Delete User Controller', () => {
     it('should returns 404 if user is not found', async () => {
         const { sut, deleteUserUseCase } = makeSut()
 
-        jest.spyOn(deleteUserUseCase, 'execute').mockReturnValue(null)
+        jest.spyOn(deleteUserUseCase, 'execute').mockResolvedValue(null)
 
         const result = await sut.execute(httpRequest)
 
@@ -70,9 +70,9 @@ describe('Delete User Controller', () => {
     it('should returns 500 if DeleteUserUseCase throws', async () => {
         const { sut, deleteUserUseCase } = makeSut()
 
-        jest.spyOn(deleteUserUseCase, 'execute').mockImplementationOnce(() => {
-            throw new Error()
-        })
+        jest.spyOn(deleteUserUseCase, 'execute').mockRejectedValueOnce(
+            new Error(),
+        )
 
         const result = await sut.execute(httpRequest)
 

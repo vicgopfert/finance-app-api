@@ -1,9 +1,10 @@
 import { faker } from '@faker-js/faker'
 import { GetUserBalanceController } from './get-user-balance.js'
+import { UserNotFoundError } from '../../errors/user.js'
 
 describe('Get User Balance Controller', () => {
     class GetUserBalanceUseCaseStub {
-        execute() {
+        async execute() {
             return faker.number.int()
         }
     }
@@ -29,7 +30,7 @@ describe('Get User Balance Controller', () => {
         expect(result.statusCode).toBe(200)
     })
 
-    it('should returns 400 if id is invalid', async () => {
+    it('should returns 400 if user id is invalid', async () => {
         const { sut } = makeSut()
 
         const result = await sut.execute({
@@ -43,5 +44,36 @@ describe('Get User Balance Controller', () => {
             'message',
             'The provided ID invalid-id is invalid.',
         )
+    })
+
+    it('should returns 404 if user is not found', async () => {
+        const { sut, getUserBalanceUseCase } = makeSut()
+
+        jest.spyOn(getUserBalanceUseCase, 'execute').mockImplementationOnce(
+            () => {
+                throw new UserNotFoundError(httpRequest.params.id)
+            },
+        )
+
+        const result = await sut.execute(httpRequest)
+
+        expect(result.statusCode).toBe(404)
+        expect(result.body).toHaveProperty(
+            'message',
+            `User with id ${httpRequest.params.id} not found.`,
+        )
+    })
+
+    it('should returns 500 if GetUserBalanceUseCase throws', async () => {
+        const { sut, getUserBalanceUseCase } = makeSut()
+
+        jest.spyOn(getUserBalanceUseCase, 'execute').mockRejectedValueOnce(
+            new Error(),
+        )
+
+        const result = await sut.execute(httpRequest)
+
+        expect(result.statusCode).toBe(500)
+        expect(result.body).toHaveProperty('message', 'Internal server error')
     })
 })

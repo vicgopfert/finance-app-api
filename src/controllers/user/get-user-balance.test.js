@@ -49,10 +49,8 @@ describe('Get User Balance Controller', () => {
     it('should returns 404 if user is not found', async () => {
         const { sut, getUserBalanceUseCase } = makeSut()
 
-        jest.spyOn(getUserBalanceUseCase, 'execute').mockImplementationOnce(
-            () => {
-                throw new UserNotFoundError(httpRequest.params.id)
-            },
+        jest.spyOn(getUserBalanceUseCase, 'execute').mockRejectedValueOnce(
+            new UserNotFoundError(httpRequest.params.id),
         )
 
         const result = await sut.execute(httpRequest)

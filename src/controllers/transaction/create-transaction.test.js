@@ -184,4 +184,18 @@ describe('Create Transaction Controller', () => {
             'Type must be EXPENSE, EARNING, or INVESTMENT',
         )
     })
+
+    it('should return 400 if amount is not a valid currency', async () => {
+        const { sut } = makeSut()
+
+        const result = await sut.execute({
+            body: {
+                ...httpRequest.body,
+                amount: 'invalid-amount',
+            },
+        })
+
+        expect(result.statusCode).toBe(400)
+        expect(result.body).toHaveProperty('message', 'Amount must be a number')
+    })
 })

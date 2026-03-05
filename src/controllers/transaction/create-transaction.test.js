@@ -215,4 +215,18 @@ describe('Create Transaction Controller', () => {
             'Amount must be greater than 0',
         )
     })
+
+    it('should return 400 if user_id is in an invalid format', async () => {
+        const { sut } = makeSut()
+
+        const result = await sut.execute({
+            body: {
+                ...httpRequest.body,
+                user_id: 'invalid-uuid',
+            },
+        })
+
+        expect(result.statusCode).toBe(400)
+        expect(result.body).toHaveProperty('message', 'Invalid user ID format')
+    })
 })

@@ -1,5 +1,5 @@
 import { UpdateUserController } from './update-user.js'
-import { UserNotFoundError } from '../../errors/user.js'
+import { UserNotFoundError, EmailAlreadyInUseError } from '../../errors/user.js'
 import { faker } from '@faker-js/faker'
 
 describe('Update User Controller', () => {
@@ -105,6 +105,22 @@ describe('Update User Controller', () => {
         expect(result.body).toHaveProperty(
             'message',
             'Password must be at least 6 characters long',
+        )
+    })
+
+    it('should return 500 if UpdateUserUseCase throws EmailIsAlreadyInUse error', async () => {
+        const { sut, updateUserUseCase } = makeSut()
+
+        jest.spyOn(updateUserUseCase, 'execute').mockRejectedValueOnce(
+            new EmailAlreadyInUseError(httpRequest.body.email),
+        )
+
+        const result = await sut.execute(httpRequest)
+
+        expect(result.statusCode).toBe(400)
+        expect(result.body).toHaveProperty(
+            'message',
+            `Email ${httpRequest.body.email} is already in use.`,
         )
     })
 

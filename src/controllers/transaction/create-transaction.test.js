@@ -1,3 +1,4 @@
+import { UserNotFoundError } from '../../errors/user.js'
 import { CreateTransactionController } from './create-transaction.js'
 import { faker } from '@faker-js/faker'
 
@@ -228,5 +229,21 @@ describe('Create Transaction Controller', () => {
 
         expect(result.statusCode).toBe(400)
         expect(result.body).toHaveProperty('message', 'Invalid user ID format')
+    })
+
+    it('should return 500 if user is not found', async () => {
+        const { sut, createTransactionUseCase } = makeSut()
+
+        jest.spyOn(createTransactionUseCase, 'execute').mockRejectedValueOnce(
+            new UserNotFoundError(httpRequest.body.user_id),
+        )
+
+        const result = await sut.execute(httpRequest)
+
+        expect(result.statusCode).toBe(404)
+        expect(result.body).toHaveProperty(
+            'message',
+            `User with id ${httpRequest.body.user_id} not found.`,
+        )
     })
 })

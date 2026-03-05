@@ -2,10 +2,10 @@ import { UserNotFoundError } from '../../errors/user.js'
 import {
     checkIfIdIsValid,
     invalidIdResponse,
+    notFound,
     ok,
     requiredFieldIsMissingResponse,
     serverError,
-    userNotFoundResponse,
 } from '../helpers/index.js'
 
 export class GetTransactionsByUserIdController {
@@ -35,7 +35,7 @@ export class GetTransactionsByUserIdController {
             console.error('Error getting transactions by user id:', error)
 
             if (error instanceof UserNotFoundError) {
-                return userNotFoundResponse()
+                return notFound({ message: error.message })
             }
 
             return serverError({ message: 'Internal server error' })

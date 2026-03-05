@@ -71,4 +71,22 @@ describe('Update User Controller', () => {
             `User with id ${httpRequest.params.id} not found.`,
         )
     })
+
+    it('should return 400 if and invalid email is provided', async () => {
+        const { sut } = makeSut()
+
+        const result = await sut.execute({
+            ...httpRequest,
+            body: {
+                ...httpRequest.body,
+                email: 'invalid-email',
+            },
+        })
+
+        expect(result.statusCode).toBe(400)
+        expect(result.body).toHaveProperty(
+            'message',
+            'Please provide a valid email address',
+        )
+    })
 })

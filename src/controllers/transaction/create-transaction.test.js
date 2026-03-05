@@ -36,4 +36,85 @@ describe('Create Transaction Controller', () => {
         )
         expect(result.body).toHaveProperty('transaction', httpRequest.body)
     })
+
+    it('should return 400 if user_id is not provided', async () => {
+        const { sut } = makeSut()
+
+        const result = await sut.execute({
+            body: {
+                ...httpRequest.body,
+                user_id: undefined,
+            },
+        })
+
+        expect(result.statusCode).toBe(400)
+        expect(result.body).toHaveProperty(
+            'message',
+            'The field user_id is not provided.',
+        )
+    })
+
+    it('should return 400 if name is not provided', async () => {
+        const { sut } = makeSut()
+
+        const result = await sut.execute({
+            body: {
+                ...httpRequest.body,
+                name: undefined,
+            },
+        })
+
+        expect(result.statusCode).toBe(400)
+        expect(result.body).toHaveProperty(
+            'message',
+            'The field name is not provided.',
+        )
+    })
+
+    it('should return 400 if date is not provided', async () => {
+        const { sut } = makeSut()
+
+        const result = await sut.execute({
+            body: {
+                ...httpRequest.body,
+                date: undefined,
+            },
+        })
+
+        expect(result.statusCode).toBe(400)
+        expect(result.body).toHaveProperty(
+            'message',
+            'The field date is not provided.',
+        )
+    })
+
+    it('should return 400 if type is not provided', async () => {
+        const { sut } = makeSut()
+
+        const result = await sut.execute({
+            body: {
+                ...httpRequest.body,
+                type: undefined,
+            },
+        })
+
+        expect(result.statusCode).toBe(400)
+        expect(result.body).toHaveProperty(
+            'message',
+            'The field type is not provided.',
+        )
+    })
+
+    it('should return 400 if amount is not provided', async () => {
+        const { sut } = makeSut()
+
+        const result = await sut.execute({
+            body: {
+                ...httpRequest.body,
+                amount: undefined,
+            },
+        })
+
+        expect(result.statusCode).toBe(400)
+    })
 })

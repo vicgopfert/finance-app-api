@@ -246,4 +246,17 @@ describe('Create Transaction Controller', () => {
             `User with id ${httpRequest.body.user_id} not found.`,
         )
     })
+
+    it('should return 500 if CreateTransactionUseCase throws an unexpected error', async () => {
+        const { sut, createTransactionUseCase } = makeSut()
+
+        jest.spyOn(createTransactionUseCase, 'execute').mockRejectedValueOnce(
+            new Error(),
+        )
+
+        const result = await sut.execute(httpRequest)
+
+        expect(result.statusCode).toBe(500)
+        expect(result.body).toHaveProperty('message', 'Internal server error')
+    })
 })

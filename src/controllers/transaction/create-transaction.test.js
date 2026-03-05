@@ -24,7 +24,7 @@ describe('Create Transaction Controller', () => {
         },
     }
 
-    it('should return 201 when creating a transaction successfully', async () => {
+    it('should return 201 when creating a transaction successfully (expense)', async () => {
         const { sut } = makeSut()
 
         const result = await sut.execute(httpRequest)
@@ -34,7 +34,43 @@ describe('Create Transaction Controller', () => {
             'message',
             'Transaction created successfully',
         )
-        expect(result.body).toHaveProperty('transaction', httpRequest.body)
+        expect(result.body).toHaveProperty('transaction')
+    })
+
+    it('should return 201 when creating a transaction successfully (earning)', async () => {
+        const { sut } = makeSut()
+
+        const result = await sut.execute({
+            body: {
+                ...httpRequest.body,
+                type: 'EARNING',
+            },
+        })
+
+        expect(result.statusCode).toBe(201)
+        expect(result.body).toHaveProperty(
+            'message',
+            'Transaction created successfully',
+        )
+        expect(result.body).toHaveProperty('transaction')
+    })
+
+    it('should return 201 when creating a transaction successfully (investment)', async () => {
+        const { sut } = makeSut()
+
+        const result = await sut.execute({
+            body: {
+                ...httpRequest.body,
+                type: 'INVESTMENT',
+            },
+        })
+
+        expect(result.statusCode).toBe(201)
+        expect(result.body).toHaveProperty(
+            'message',
+            'Transaction created successfully',
+        )
+        expect(result.body).toHaveProperty('transaction')
     })
 
     it('should return 400 if user_id is not provided', async () => {

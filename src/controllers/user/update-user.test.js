@@ -89,4 +89,22 @@ describe('Update User Controller', () => {
             'Please provide a valid email address',
         )
     })
+
+    it('should return 400 if and invalid email is provided', async () => {
+        const { sut } = makeSut()
+
+        const result = await sut.execute({
+            ...httpRequest,
+            body: {
+                ...httpRequest.body,
+                password: faker.internet.password({ length: 5 }),
+            },
+        })
+
+        expect(result.statusCode).toBe(400)
+        expect(result.body).toHaveProperty(
+            'message',
+            'Password must be at least 6 characters long',
+        )
+    })
 })

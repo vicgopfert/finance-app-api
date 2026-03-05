@@ -198,4 +198,21 @@ describe('Create Transaction Controller', () => {
         expect(result.statusCode).toBe(400)
         expect(result.body).toHaveProperty('message', 'Amount must be a number')
     })
+
+    it('should return 400 if amount is less than or equal to 0', async () => {
+        const { sut } = makeSut()
+
+        const result = await sut.execute({
+            body: {
+                ...httpRequest.body,
+                amount: -10,
+            },
+        })
+
+        expect(result.statusCode).toBe(400)
+        expect(result.body).toHaveProperty(
+            'message',
+            'Amount must be greater than 0',
+        )
+    })
 })

@@ -77,4 +77,17 @@ describe('Get Transactions By User ID Controller', () => {
             `User with id ${httpRequest.query.userId} not found.`,
         )
     })
+
+    it('should return 500 if GetUserByIdUseCase throws an unexpected error', async () => {
+        const { sut, getUserByIdUseCase } = makeSut()
+
+        jest.spyOn(getUserByIdUseCase, 'execute').mockRejectedValueOnce(
+            new Error(),
+        )
+
+        const result = await sut.execute(httpRequest)
+
+        expect(result.statusCode).toBe(500)
+        expect(result.body).toHaveProperty('message', 'Internal server error')
+    })
 })

@@ -1,4 +1,4 @@
-import { UserNotFoundError } from '../../errors/user.js'
+import { TransactionNotFoundError } from '../../errors/transaction.js'
 import {
     serverError,
     checkIfIdIsValid,
@@ -30,7 +30,7 @@ export class DeleteTransactionController {
                 transaction: deletedTransaction,
             })
         } catch (error) {
-            if (error instanceof UserNotFoundError) {
+            if (error instanceof TransactionNotFoundError) {
                 return notFound({
                     message: error.message,
                 })

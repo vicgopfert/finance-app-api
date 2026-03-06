@@ -49,4 +49,18 @@ describe('Get Transactions By User ID Controller', () => {
             'Field userId is required.',
         )
     })
+
+    it('should return 400 if userId is invalid', async () => {
+        const { sut } = makeSut()
+
+        const result = await sut.execute({
+            query: { userId: 'invalid-user-id' },
+        })
+
+        expect(result.statusCode).toBe(400)
+        expect(result.body).toHaveProperty(
+            'message',
+            'The provided ID invalid-user-id is invalid.',
+        )
+    })
 })

@@ -5,6 +5,7 @@ describe('Delete Transaction Controller', () => {
     class DeleteTransactionUseCaseStub {
         async execute() {
             return {
+                id: faker.string.uuid(),
                 user_id: faker.string.uuid(),
                 name: faker.commerce.productName(),
                 date: faker.date.recent().toISOString(),
@@ -12,6 +13,12 @@ describe('Delete Transaction Controller', () => {
                 amount: Number(faker.finance.amount(0.01, 10000, 2)),
             }
         }
+    }
+
+    const httpRequest = {
+        params: {
+            id: faker.string.uuid(),
+        },
     }
 
     const makeSut = () => {
@@ -23,11 +30,7 @@ describe('Delete Transaction Controller', () => {
     it('should return 200 when deleting a transaction successfully', async () => {
         const { sut } = makeSut()
 
-        const result = await sut.execute({
-            params: {
-                id: faker.string.uuid(),
-            },
-        })
+        const result = await sut.execute(httpRequest)
 
         expect(result.statusCode).toBe(200)
         expect(result.body).toHaveProperty(
@@ -35,5 +38,21 @@ describe('Delete Transaction Controller', () => {
             'Transaction deleted successfully',
         )
         expect(result.body).toHaveProperty('transaction')
+    })
+
+    it('should return 400 if transaction id is invalid', async () => {
+        const { sut } = makeSut()
+
+        const result = await sut.execute({
+            params: {
+                id: 'invalid-uuid',
+            },
+        })
+
+        expect(result.statusCode).toBe(400)
+        expect(result.body).toHaveProperty(
+            'message',
+            'The provided ID invalid-uuid is invalid.',
+        )
     })
 })

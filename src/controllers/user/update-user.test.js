@@ -154,4 +154,17 @@ describe('Update User Controller', () => {
         expect(result.statusCode).toBe(500)
         expect(result.body).toHaveProperty('message', 'Internal server error')
     })
+
+    it('should call UpdateUserUseCase with correct params', async () => {
+        const { sut, updateUserUseCase } = makeSut()
+
+        const executeSpy = jest.spyOn(updateUserUseCase, 'execute')
+
+        await sut.execute(httpRequest)
+
+        expect(executeSpy).toHaveBeenCalledWith(
+            httpRequest.params.id,
+            httpRequest.body,
+        )
+    })
 })

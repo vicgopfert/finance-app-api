@@ -47,7 +47,7 @@ describe('Get User By ID Controller', () => {
         expect(result.statusCode).toBe(400)
         expect(result.body).toHaveProperty(
             'message',
-            'The provided ID is invalid.',
+            'The provided ID invalid-id is invalid.',
         )
     })
 

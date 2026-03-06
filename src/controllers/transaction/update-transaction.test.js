@@ -45,4 +45,20 @@ describe('Update Transaction Controller', () => {
         )
         expect(result.body).toHaveProperty('transaction')
     })
+
+    it('should return 400 if transaction id is invalid', async () => {
+        const { sut } = makeSut()
+
+        const result = await sut.execute({
+            params: {
+                id: 'invalid-uuid',
+            },
+        })
+
+        expect(result.statusCode).toBe(400)
+        expect(result.body).toHaveProperty(
+            'message',
+            'The provided ID invalid-uuid is invalid.',
+        )
+    })
 })

@@ -36,7 +36,7 @@ export class DeleteTransactionController {
                 })
             }
             console.error('Error deleting transaction:', error)
-            return serverError()
+            return serverError({ message: 'Internal server error' })
         }
     }
 }

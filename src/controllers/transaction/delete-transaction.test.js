@@ -72,4 +72,17 @@ describe('Delete Transaction Controller', () => {
             `Transaction with id ${httpRequest.params.id} not found.`,
         )
     })
+
+    it('should return 500 if DeleteTransactionUseCase throws an unexpected error', async () => {
+        const { sut, deleteTransactionUseCase } = makeSut()
+
+        jest.spyOn(deleteTransactionUseCase, 'execute').mockRejectedValueOnce(
+            new Error(),
+        )
+
+        const result = await sut.execute(httpRequest)
+
+        expect(result.statusCode).toBe(500)
+        expect(result.body).toHaveProperty('message', 'Internal server error')
+    })
 })

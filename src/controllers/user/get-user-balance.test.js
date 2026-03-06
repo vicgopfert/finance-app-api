@@ -74,4 +74,14 @@ describe('Get User Balance Controller', () => {
         expect(result.statusCode).toBe(500)
         expect(result.body).toHaveProperty('message', 'Internal server error')
     })
+
+    it('should call GetUserBalanceUseCase with correct params', async () => {
+        const { sut, getUserBalanceUseCase } = makeSut()
+
+        const executeSpy = jest.spyOn(getUserBalanceUseCase, 'execute')
+
+        await sut.execute(httpRequest)
+
+        expect(executeSpy).toHaveBeenCalledWith(httpRequest.params.id)
+    })
 })

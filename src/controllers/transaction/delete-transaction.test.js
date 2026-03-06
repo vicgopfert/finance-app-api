@@ -1,4 +1,5 @@
 import { DeleteTransactionController } from './delete-transaction'
+import { TransactionNotFoundError } from '../../errors/transaction.js'
 import { faker } from '@faker-js/faker'
 
 describe('Delete Transaction Controller', () => {
@@ -53,6 +54,22 @@ describe('Delete Transaction Controller', () => {
         expect(result.body).toHaveProperty(
             'message',
             'The provided ID invalid-uuid is invalid.',
+        )
+    })
+
+    it('should return 404 if transaction is not found', async () => {
+        const { sut, deleteTransactionUseCase } = makeSut()
+
+        jest.spyOn(deleteTransactionUseCase, 'execute').mockRejectedValueOnce(
+            new TransactionNotFoundError(httpRequest.params.id),
+        )
+
+        const result = await sut.execute(httpRequest)
+
+        expect(result.statusCode).toBe(404)
+        expect(result.body).toHaveProperty(
+            'message',
+            `Transaction with id ${httpRequest.params.id} not found.`,
         )
     })
 })

@@ -1,8 +1,9 @@
+import { UserNotFoundError } from '../../errors/user'
 import { GetTransactionsByUserIdController } from './get-transactions-by-user-id.js'
 import { faker } from '@faker-js/faker'
 
 describe('Get Transactions By User ID Controller', () => {
-    class GetTransactionsByUserIdUseCaseStub {
+    class GetUserByIdUseCaseStub {
         async execute() {
             return {
                 id: faker.string.uuid(),
@@ -16,12 +17,9 @@ describe('Get Transactions By User ID Controller', () => {
     }
 
     const makeSut = () => {
-        const getTransactionsByUserIdUseCase =
-            new GetTransactionsByUserIdUseCaseStub()
-        const sut = new GetTransactionsByUserIdController(
-            getTransactionsByUserIdUseCase,
-        )
-        return { getTransactionsByUserIdUseCase, sut }
+        const getUserByIdUseCase = new GetUserByIdUseCaseStub()
+        const sut = new GetTransactionsByUserIdController(getUserByIdUseCase)
+        return { getUserByIdUseCase, sut }
     }
 
     const httpRequest = {
@@ -61,6 +59,22 @@ describe('Get Transactions By User ID Controller', () => {
         expect(result.body).toHaveProperty(
             'message',
             'The provided ID invalid-user-id is invalid.',
+        )
+    })
+
+    it('should return 404 if user is not found', async () => {
+        const { sut, getUserByIdUseCase } = makeSut()
+
+        jest.spyOn(getUserByIdUseCase, 'execute').mockRejectedValueOnce(
+            new UserNotFoundError(httpRequest.query.userId),
+        )
+
+        const result = await sut.execute(httpRequest)
+
+        expect(result.statusCode).toBe(404)
+        expect(result.body).toHaveProperty(
+            'message',
+            `User with id ${httpRequest.query.userId} not found.`,
         )
     })
 })

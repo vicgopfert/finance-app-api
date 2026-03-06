@@ -129,4 +129,22 @@ describe('Update Transaction Controller', () => {
             'Amount must be greater than 0',
         )
     })
+
+    it('should return 400 if type is not EXPENSE, EARNING or INVESTMENT', async () => {
+        const { sut } = makeSut()
+
+        const result = await sut.execute({
+            ...httpRequest,
+            body: {
+                ...httpRequest.body,
+                type: 'invalid_type',
+            },
+        })
+
+        expect(result.statusCode).toBe(400)
+        expect(result.body).toHaveProperty(
+            'message',
+            'Type must be EXPENSE, EARNING, or INVESTMENT',
+        )
+    })
 })

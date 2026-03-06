@@ -97,6 +97,21 @@ describe('Update Transaction Controller', () => {
         )
     })
 
+    it('should return 400 if date is in an invalid format', async () => {
+        const { sut } = makeSut()
+
+        const result = await sut.execute({
+            ...httpRequest,
+            body: {
+                ...httpRequest.body,
+                date: 'invalid-date',
+            },
+        })
+
+        expect(result.statusCode).toBe(400)
+        expect(result.body).toHaveProperty('message', 'Invalid date format')
+    })
+
     it('should return 400 if amount is not a valid currency', async () => {
         const { sut } = makeSut()
 
@@ -146,5 +161,18 @@ describe('Update Transaction Controller', () => {
             'message',
             'Type must be EXPENSE, EARNING, or INVESTMENT',
         )
+    })
+
+    it('should return 500 if UpdateTransactionUseCase throws an unexpected error', async () => {
+        const { sut, updateTransactionUseCase } = makeSut()
+
+        jest.spyOn(updateTransactionUseCase, 'execute').mockRejectedValueOnce(
+            new Error(),
+        )
+
+        const result = await sut.execute(httpRequest)
+
+        expect(result.statusCode).toBe(500)
+        expect(result.body).toHaveProperty('message', 'Internal server error')
     })
 })

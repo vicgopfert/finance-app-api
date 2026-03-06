@@ -79,4 +79,14 @@ describe('Get User By ID Controller', () => {
         expect(result.statusCode).toBe(500)
         expect(result.body).toHaveProperty('message', 'Internal server error')
     })
+
+    it('should call GetUserByIdUseCase with correct params', async () => {
+        const { sut, getUserByIdUseCase } = makeSut()
+
+        const executeSpy = jest.spyOn(getUserByIdUseCase, 'execute')
+
+        await sut.execute(httpRequest)
+
+        expect(executeSpy).toHaveBeenCalledWith(httpRequest.params.id)
+    })
 })

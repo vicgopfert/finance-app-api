@@ -96,4 +96,37 @@ describe('Update Transaction Controller', () => {
             'Some provided field is not allowed to be updated',
         )
     })
+
+    it('should return 400 if amount is not a valid currency', async () => {
+        const { sut } = makeSut()
+
+        const result = await sut.execute({
+            ...httpRequest,
+            body: {
+                ...httpRequest.body,
+                amount: 'invalid-amount',
+            },
+        })
+
+        expect(result.statusCode).toBe(400)
+        expect(result.body).toHaveProperty('message', 'Amount must be a number')
+    })
+
+    it('should return 400 if amount is less than or equal to 0', async () => {
+        const { sut } = makeSut()
+
+        const result = await sut.execute({
+            ...httpRequest,
+            body: {
+                ...httpRequest.body,
+                amount: -10,
+            },
+        })
+
+        expect(result.statusCode).toBe(400)
+        expect(result.body).toHaveProperty(
+            'message',
+            'Amount must be greater than 0',
+        )
+    })
 })

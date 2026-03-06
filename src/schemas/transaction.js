@@ -35,5 +35,6 @@ export const createTransactionSchema = z.object({
 })
 
 export const updateTransactionSchema = createTransactionSchema
+    .omit({ user_id: true })
     .partial()
     .strict('Some provided field is not allowed to be updated')

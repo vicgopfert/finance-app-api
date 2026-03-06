@@ -78,4 +78,22 @@ describe('Update Transaction Controller', () => {
             `Transaction with id ${httpRequest.params.id} not found.`,
         )
     })
+
+    it('should return 400 when an unallowed field is provided', async () => {
+        const { sut } = makeSut()
+
+        const result = await sut.execute({
+            ...httpRequest,
+            body: {
+                ...httpRequest.body,
+                unallowed_field: 'unallowed_value',
+            },
+        })
+
+        expect(result.statusCode).toBe(400)
+        expect(result.body).toHaveProperty(
+            'message',
+            'Some provided field is not allowed to be updated',
+        )
+    })
 })

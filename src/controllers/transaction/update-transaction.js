@@ -1,11 +1,12 @@
 import { updateTransactionSchema } from '../../schemas/transaction.js'
+import { TransactionNotFoundError } from '../../errors/transaction.js'
 import {
     badRequest,
     checkIfIdIsValid,
     invalidIdResponse,
+    notFound,
     ok,
     serverError,
-    transactionNotFoundResponse,
 } from '../helpers/index.js'
 
 import { z } from 'zod'
@@ -35,15 +36,16 @@ export class UpdateTransactionController {
                     params,
                 )
 
-            if (!updatedTransaction) {
-                return transactionNotFoundResponse(transactionId)
-            }
-
             return ok({
                 message: 'Transaction updated successfully',
                 transaction: updatedTransaction,
             })
         } catch (error) {
+            if (error instanceof TransactionNotFoundError) {
+                return notFound({
+                    message: error.message,
+                })
+            }
             if (error instanceof z.ZodError) {
                 const unrecognizedKeysError = error.issues.find(
                     (issue) => issue.code === 'unrecognized_keys',

@@ -1,3 +1,5 @@
+import { TransactionNotFoundError } from '../../errors/transaction.js'
+
 export class UpdateTransactionUseCase {
     constructor(updateTransactionRepository) {
         this.updateTransactionRepository = updateTransactionRepository
@@ -8,6 +10,10 @@ export class UpdateTransactionUseCase {
             transactionId,
             params,
         )
+
+        if (!transaction) {
+            throw new TransactionNotFoundError(transactionId)
+        }
 
         return transaction
     }

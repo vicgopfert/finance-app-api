@@ -38,7 +38,6 @@ describe('Create User Controller', () => {
         expect(result.body).toHaveProperty('user', httpRequest.body)
     })
 
-    // Status 400 when some field is not provided
     it('should returns 400 if first_name is not provided', async () => {
         const { sut } = makeSut()
 
@@ -107,7 +106,6 @@ describe('Create User Controller', () => {
         )
     })
 
-    // Status 400 when email is not valid
     it('should returns 400 if email is not valid', async () => {
         const { sut } = makeSut()
 
@@ -125,7 +123,6 @@ describe('Create User Controller', () => {
         )
     })
 
-    // Status 500 when email is already in use
     it('should returns 500 if CreateUserUseCase throws EmailIsAlreadyInUse error', async () => {
         const { sut, createUserUseCase } = makeSut()
 
@@ -142,7 +139,6 @@ describe('Create User Controller', () => {
         )
     })
 
-    // Status 400 when password is less than 6 characters
     it('should returns 400 if password is less than 6 characters', async () => {
         const { sut } = makeSut()
 
@@ -160,17 +156,6 @@ describe('Create User Controller', () => {
         )
     })
 
-    // Verify if CreateUserUseCase is called with correct params
-    it('should call CreateUserUseCase with correct params', async () => {
-        const { sut, createUserUseCase } = makeSut()
-
-        const executeSpy = jest.spyOn(createUserUseCase, 'execute')
-
-        await sut.execute(httpRequest)
-
-        expect(executeSpy).toHaveBeenCalledWith(httpRequest.body)
-    })
-
     it('should returns 500 if CreateUserUseCase throws', async () => {
         const { sut, createUserUseCase } = makeSut()
 
@@ -182,5 +167,15 @@ describe('Create User Controller', () => {
 
         expect(result.statusCode).toBe(500)
         expect(result.body).toHaveProperty('message', 'Internal server error')
+    })
+
+    it('should call CreateUserUseCase with correct params', async () => {
+        const { sut, createUserUseCase } = makeSut()
+
+        const executeSpy = jest.spyOn(createUserUseCase, 'execute')
+
+        await sut.execute(httpRequest)
+
+        expect(executeSpy).toHaveBeenCalledWith(httpRequest.body)
     })
 })

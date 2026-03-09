@@ -2,8 +2,9 @@
 export default {
     testEnvironment: 'node',
     clearMocks: true,
-    collectCoverage: false,
+    collectCoverage: true,
     coverageDirectory: 'coverage',
+    collectCoverageFrom: ['src/**/*.js', '!src/**/*.test.js'],
     testMatch: ['**/src/**/*.test.js'],
     verbose: true,
     transform: {

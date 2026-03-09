@@ -53,4 +53,16 @@ describe('Delete User Use Case', () => {
             new UserNotFoundError(userId),
         )
     })
+
+    it('should throw if DeleteUserRepository throws', async () => {
+        const { sut, deleteUserRepository } = makeSut()
+
+        jest.spyOn(deleteUserRepository, 'execute').mockRejectedValue(
+            new Error(),
+        )
+
+        const promise = sut.execute(faker.string.uuid())
+
+        expect(promise).rejects.toThrow(new Error())
+    })
 })

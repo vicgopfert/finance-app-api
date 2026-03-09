@@ -51,7 +51,7 @@ describe('Get User By ID Controller', () => {
         )
     })
 
-    it('should returns 404 if user is not found', async () => {
+    it('should returns 404 if GetUserByIdUseCase throws UserNotFoundError', async () => {
         const { sut, getUserByIdUseCase } = makeSut()
 
         jest.spyOn(getUserByIdUseCase, 'execute').mockRejectedValueOnce(
@@ -67,7 +67,7 @@ describe('Get User By ID Controller', () => {
         )
     })
 
-    it('should returns 500 if GetUserByIdUseCase throws', async () => {
+    it('should returns 500 if GetUserByIdUseCase throws an unexpected error', async () => {
         const { sut, getUserByIdUseCase } = makeSut()
 
         jest.spyOn(getUserByIdUseCase, 'execute').mockRejectedValueOnce(

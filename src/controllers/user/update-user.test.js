@@ -56,7 +56,7 @@ describe('Update User Controller', () => {
         )
     })
 
-    it('should return 404 if user is not found', async () => {
+    it('should return 404 if UpdateUserUseCase throws UserNotFoundError', async () => {
         const { sut, updateUserUseCase } = makeSut()
 
         jest.spyOn(updateUserUseCase, 'execute').mockRejectedValueOnce(
@@ -108,7 +108,7 @@ describe('Update User Controller', () => {
         )
     })
 
-    it('should return 500 if UpdateUserUseCase throws EmailIsAlreadyInUse error', async () => {
+    it('should return 500 if UpdateUserUseCase throws EmailIsAlreadyInUseError', async () => {
         const { sut, updateUserUseCase } = makeSut()
 
         jest.spyOn(updateUserUseCase, 'execute').mockRejectedValueOnce(
@@ -142,7 +142,7 @@ describe('Update User Controller', () => {
         )
     })
 
-    it('should return 500 if UpdateUserUseCase throws with generic error', async () => {
+    it('should return 500 if UpdateUserUseCase throws an unexpected error', async () => {
         const { sut, updateUserUseCase } = makeSut()
 
         jest.spyOn(updateUserUseCase, 'execute').mockRejectedValueOnce(

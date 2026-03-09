@@ -46,7 +46,7 @@ describe('Get User Balance Controller', () => {
         )
     })
 
-    it('should returns 404 if user is not found', async () => {
+    it('should returns 404 if GetUserBalanceUseCase throws UserNotFoundError', async () => {
         const { sut, getUserBalanceUseCase } = makeSut()
 
         jest.spyOn(getUserBalanceUseCase, 'execute').mockRejectedValueOnce(
@@ -62,7 +62,7 @@ describe('Get User Balance Controller', () => {
         )
     })
 
-    it('should returns 500 if GetUserBalanceUseCase throws', async () => {
+    it('should returns 500 if GetUserBalanceUseCase throws an unexpected error', async () => {
         const { sut, getUserBalanceUseCase } = makeSut()
 
         jest.spyOn(getUserBalanceUseCase, 'execute').mockRejectedValueOnce(

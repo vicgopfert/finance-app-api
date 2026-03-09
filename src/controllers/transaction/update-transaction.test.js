@@ -63,7 +63,7 @@ describe('Update Transaction Controller', () => {
         )
     })
 
-    it('should return 404 if transaction is not found', async () => {
+    it('should return 404 if UpdateTransactionUseCase throws TransactionNotFoundError', async () => {
         const { sut, updateTransactionUseCase } = makeSut()
 
         jest.spyOn(updateTransactionUseCase, 'execute').mockRejectedValueOnce(

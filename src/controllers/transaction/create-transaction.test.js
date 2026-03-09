@@ -231,7 +231,7 @@ describe('Create Transaction Controller', () => {
         expect(result.body).toHaveProperty('message', 'Invalid user ID format')
     })
 
-    it('should return 500 if user is not found', async () => {
+    it('should return 500 if CreateTransactionUseCase throws UserNotFoundError', async () => {
         const { sut, createTransactionUseCase } = makeSut()
 
         jest.spyOn(createTransactionUseCase, 'execute').mockRejectedValueOnce(

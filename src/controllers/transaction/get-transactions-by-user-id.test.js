@@ -62,7 +62,7 @@ describe('Get Transactions By User ID Controller', () => {
         )
     })
 
-    it('should return 404 if user is not found', async () => {
+    it('should return 404 if GetTransactionsByUserIdUseCase throws UserNotFoundError', async () => {
         const { sut, getUserByIdUseCase } = makeSut()
 
         jest.spyOn(getUserByIdUseCase, 'execute').mockRejectedValueOnce(

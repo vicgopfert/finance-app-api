@@ -85,4 +85,16 @@ describe('Get User Balance Use Case', () => {
 
         expect(getUserBalanceSpy).toHaveBeenCalledWith(userId)
     })
+
+    it('should throw if GetUserByIdRepository throws', async () => {
+        const { sut, getUserByIdRepository } = makeSut()
+
+        jest.spyOn(getUserByIdRepository, 'execute').mockRejectedValue(
+            new Error(),
+        )
+
+        const balancePromise = sut.execute(faker.string.uuid())
+
+        await expect(balancePromise).rejects.toThrow()
+    })
 })

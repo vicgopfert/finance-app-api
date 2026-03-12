@@ -1,5 +1,5 @@
 import { UpdateUserUseCase } from './update-user.js'
-import { EmailAlreadyInUseError } from '../../errors/user.js'
+import { EmailAlreadyInUseError, UserNotFoundError } from '../../errors/user.js'
 import { faker } from '@faker-js/faker'
 
 describe('Update User Use Case', () => {
@@ -124,5 +124,17 @@ describe('Update User Use Case', () => {
             ...updatedUserParams,
             password: 'hashed_password',
         })
+    })
+
+    it('should throw UserNotFoundError if UpdateUserRepository returns null', async () => {
+        const { sut, updateUserRepository } = makeSut()
+
+        jest.spyOn(updateUserRepository, 'execute').mockResolvedValue(null)
+
+        const userId = faker.string.uuid()
+
+        expect(sut.execute(userId, {})).rejects.toThrow(
+            new UserNotFoundError(userId),
+        )
     })
 })

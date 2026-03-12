@@ -53,4 +53,16 @@ describe('Get User Balance by ID Use Case', () => {
             new UserNotFoundError(userId),
         )
     })
+
+    it('should throw if GetUserByIdRepository throws', async () => {
+        const { sut, getUserByIdRepository } = makeSut()
+
+        jest.spyOn(getUserByIdRepository, 'execute').mockRejectedValue(
+            new Error(),
+        )
+
+        const promise = sut.execute(faker.string.uuid())
+
+        expect(promise).rejects.toThrow(new Error())
+    })
 })

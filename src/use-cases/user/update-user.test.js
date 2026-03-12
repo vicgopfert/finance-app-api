@@ -146,7 +146,21 @@ describe('Update User Use Case', () => {
         )
 
         const promise = sut.execute(faker.string.uuid(), {
-            email: user.email,
+            email: faker.internet.email(),
+        })
+
+        await expect(promise).rejects.toThrow(new Error())
+    })
+
+    it('should throw if PasswordHasherAdapter throws', async () => {
+        const { sut, passwordHasherAdapter } = makeSut()
+
+        jest.spyOn(passwordHasherAdapter, 'execute').mockRejectedValue(
+            new Error(),
+        )
+
+        const promise = sut.execute(faker.string.uuid(), {
+            password: faker.internet.password(),
         })
 
         await expect(promise).rejects.toThrow(new Error())

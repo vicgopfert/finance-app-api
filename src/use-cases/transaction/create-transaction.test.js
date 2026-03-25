@@ -81,7 +81,7 @@ describe('Create Transaction Use Case', () => {
     it('should throw a UserNotFoundError if GetUserByIdRepository returns null', async () => {
         const { sut, getUserByIdRepository } = makeSut()
 
-        jest.spyOn(getUserByIdRepository, 'execute').mockResolvedValue(null)
+        jest.spyOn(getUserByIdRepository, 'execute').mockResolvedValueOnce(null)
 
         const promise = sut.execute(createTransactionParams)
 
@@ -143,6 +143,19 @@ describe('Create Transaction Use Case', () => {
         jest.spyOn(idGeneratorAdapter, 'execute').mockImplementationOnce(() => {
             throw new Error()
         })
+
+        const promise = sut.execute(createTransactionParams)
+
+        await expect(promise).rejects.toThrow()
+    })
+
+    it('should throw if CreateTransactionRepository throws', async () => {
+        const { sut, createTransactionRepository } = makeSut()
+
+        jest.spyOn(
+            createTransactionRepository,
+            'execute',
+        ).mockRejectedValueOnce(new Error())
 
         const promise = sut.execute(createTransactionParams)
 

@@ -89,4 +89,23 @@ describe('Create Transaction Use Case', () => {
             new UserNotFoundError(createTransactionParams.user_id),
         )
     })
+
+    it('should call IdGeneratorAdapter to generate a random id', async () => {
+        const { sut, idGeneratorAdapter, createTransactionRepository } =
+            makeSut()
+
+        const idGeneratorSpy = jest.spyOn(idGeneratorAdapter, 'execute')
+        const createTransactionRepositorySpy = jest.spyOn(
+            createTransactionRepository,
+            'execute',
+        )
+
+        await sut.execute(user)
+
+        expect(idGeneratorSpy).toHaveBeenCalled()
+        expect(createTransactionRepositorySpy).toHaveBeenCalledWith({
+            ...user,
+            id: 'generated_id',
+        })
+    })
 })

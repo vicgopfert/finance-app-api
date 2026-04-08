@@ -1,6 +1,7 @@
 import { GetUserByIdUseCase } from './get-user-by-id.js'
 import { UserNotFoundError } from '../../errors/user.js'
 import { faker } from '@faker-js/faker'
+import { user } from '../../tests/index.js'
 
 describe('Get User Balance by ID Use Case', () => {
     class GetUserByIdRepositoryStub {
@@ -13,14 +14,6 @@ describe('Get User Balance by ID Use Case', () => {
         const getUserByIdRepository = new GetUserByIdRepositoryStub()
         const sut = new GetUserByIdUseCase(getUserByIdRepository)
         return { sut, getUserByIdRepository }
-    }
-
-    const user = {
-        id: faker.string.uuid(),
-        first_name: faker.person.firstName(),
-        last_name: faker.person.lastName(),
-        email: faker.internet.email(),
-        password: faker.internet.password({ length: 7 }),
     }
 
     it('should get user by id successfully', async () => {

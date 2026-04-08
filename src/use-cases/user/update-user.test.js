@@ -1,6 +1,7 @@
 import { UpdateUserUseCase } from './update-user.js'
 import { EmailAlreadyInUseError, UserNotFoundError } from '../../errors/user.js'
 import { faker } from '@faker-js/faker'
+import { user } from '../../tests/index.js'
 
 describe('Update User Use Case', () => {
     class GetUserByEmailRepositoryStub {
@@ -36,14 +37,6 @@ describe('Update User Use Case', () => {
             updateUserRepository,
             passwordHasherAdapter,
         }
-    }
-
-    const user = {
-        id: faker.string.uuid(),
-        first_name: faker.person.firstName(),
-        last_name: faker.person.lastName(),
-        email: faker.internet.email(),
-        password: faker.internet.password({ length: 7 }),
     }
 
     it('should update a user successfully (without email and password)', async () => {

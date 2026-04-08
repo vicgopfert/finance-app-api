@@ -1,6 +1,7 @@
 import { DeleteUserUseCase } from './delete-user.js'
 import { UserNotFoundError } from '../../errors/user.js'
 import { faker } from '@faker-js/faker'
+import { user } from '../../tests/index.js'
 
 describe('Delete User Use Case', () => {
     class DeleteUserRepositoryStub {
@@ -13,14 +14,6 @@ describe('Delete User Use Case', () => {
         const deleteUserRepository = new DeleteUserRepositoryStub()
         const sut = new DeleteUserUseCase(deleteUserRepository)
         return { sut, deleteUserRepository }
-    }
-
-    const user = {
-        id: faker.string.uuid(),
-        first_name: faker.person.firstName(),
-        last_name: faker.person.lastName(),
-        email: faker.internet.email(),
-        password: faker.internet.password({ length: 7 }),
     }
 
     it('should delete a user successfully', async () => {

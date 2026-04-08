@@ -11,4 +11,5 @@ export default {
         '^.+\\.js$': 'babel-jest',
     },
     transformIgnorePatterns: [],
+    // globalSetup: '<rootDir>/jest.global-setup.js', (quando usar o docker para rodar os testes)
 }

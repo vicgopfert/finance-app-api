@@ -1,10 +1,11 @@
 import { UpdateUserController } from './update-user.js'
 import { UserNotFoundError, EmailAlreadyInUseError } from '../../errors/user.js'
 import { faker } from '@faker-js/faker'
+import { user } from '../../tests/index.js'
 
 describe('Update User Controller', () => {
     class UpdateUserUseCaseStub {
-        async execute(user) {
+        async execute() {
             return user
         }
     }

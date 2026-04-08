@@ -12,4 +12,5 @@ export default {
     },
     transformIgnorePatterns: [],
     // globalSetup: '<rootDir>/jest.global-setup.js', (quando usar o docker para rodar os testes)
+    setupFilesAfterEnv: ['<rootDir>/jest.setup-after-env.js'],
 }

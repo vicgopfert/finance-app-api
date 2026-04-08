@@ -1,6 +1,6 @@
 import { CreateTransactionUseCase } from './create-transaction.js'
 import { UserNotFoundError } from '../../errors/user.js'
-import { faker } from '@faker-js/faker'
+import { transaction, user } from '../../tests/index.js'
 
 describe('Create Transaction Use Case', () => {
     class CreateTransactionRepositoryUseCase {
@@ -16,8 +16,8 @@ describe('Create Transaction Use Case', () => {
     }
 
     class GetUserByIdRepositoryStub {
-        async execute(userId) {
-            return { ...user, id: userId }
+        async execute() {
+            return user
         }
     }
 
@@ -40,19 +40,9 @@ describe('Create Transaction Use Case', () => {
         }
     }
 
-    const user = {
-        first_name: faker.person.firstName(),
-        last_name: faker.person.lastName(),
-        email: faker.internet.email(),
-        password: faker.internet.password({ length: 7 }),
-    }
-
     const createTransactionParams = {
-        user_id: faker.string.uuid(),
-        name: faker.commerce.productName(),
-        date: faker.date.recent().toISOString(),
-        type: 'EXPENSE',
-        amount: Number(faker.finance.amount(0.01, 10000, 2)),
+        ...transaction,
+        id: undefined,
     }
 
     it('should create a transaction successfully', async () => {

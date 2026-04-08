@@ -1,6 +1,7 @@
 import { DeleteTransactionUseCase } from './delete-transaction.js'
 import { TransactionNotFoundError } from '../../errors/transaction.js'
 import { faker } from '@faker-js/faker'
+import { transaction } from '../../tests/index.js'
 
 describe('Delete Transaction Use Case', () => {
     class DeleteTransactionRepositoryStub {
@@ -14,15 +15,6 @@ describe('Delete Transaction Use Case', () => {
             new DeleteTransactionRepositoryStub()
         const sut = new DeleteTransactionUseCase(deleteTransactionRepository)
         return { sut, deleteTransactionRepository }
-    }
-
-    const transaction = {
-        id: faker.string.uuid(),
-        user_id: faker.string.uuid(),
-        name: faker.commerce.productName(),
-        date: faker.date.recent().toISOString(),
-        type: 'EXPENSE',
-        amount: Number(faker.finance.amount(0.01, 10000, 2)),
     }
 
     it('should delete a transaction successfully', async () => {

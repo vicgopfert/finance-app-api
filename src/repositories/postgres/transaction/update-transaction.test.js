@@ -50,4 +50,19 @@ describe('Update Transaction Repository', () => {
             dayjs(updateTransactionParams.date).year(),
         )
     })
+
+    it('should call Prisma with correct params', async () => {
+        const { transaction } = await createUserAndTransactionOnDb()
+        const sut = new PostgresUpdateTransactionRepository()
+        const prismaSpy = jest.spyOn(prisma.transaction, 'update')
+
+        await sut.execute(transaction.id, transaction)
+
+        expect(prismaSpy).toHaveBeenCalledWith({
+            where: {
+                id: transaction.id,
+            },
+            data: transaction,
+        })
+    })
 })

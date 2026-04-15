@@ -1,12 +1,14 @@
 import {
     generateCreateUserController,
     generateGetUserByIdController,
+    generateGetUserBalanceController,
     generateUpdateUserController,
     generateDeleteUserController,
 } from './user'
 import {
     CreateUserController,
     GetUserByIdController,
+    GetUserBalanceController,
     UpdateUserController,
     DeleteUserController,
 } from '../../controllers'
@@ -21,6 +23,12 @@ describe('User Controller Factories', () => {
     it('should return a valid GetUserByIdController instance', () => {
         expect(generateGetUserByIdController()).toBeInstanceOf(
             GetUserByIdController,
+        )
+    })
+
+    it('should return a valid GetUserBalanceController instance', () => {
+        expect(generateGetUserBalanceController()).toBeInstanceOf(
+            GetUserBalanceController,
         )
     })
 

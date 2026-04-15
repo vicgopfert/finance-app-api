@@ -20,4 +20,23 @@ describe('Create Transaction Use Case', () => {
         expect(dayjs(result.date).month()).toBe(dayjs(transaction.date).month())
         expect(dayjs(result.date).year()).toBe(dayjs(transaction.date).year())
     })
+
+    it('should call Prisma with correct params', async () => {
+        const user = await prisma.user.create({ data: fakeUser })
+        const sut = new PostgresCreateTransactionRepository()
+        const prismaSpy = jest.spyOn(prisma.transaction, 'create')
+
+        await sut.execute({ ...transaction, user_id: user.id })
+
+        expect(prismaSpy).toHaveBeenCalledWith({
+            data: {
+                id: transaction.id,
+                user_id: user.id,
+                name: transaction.name,
+                date: transaction.date,
+                amount: transaction.amount,
+                type: transaction.type,
+            },
+        })
+    })
 })

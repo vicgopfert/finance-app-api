@@ -1,11 +1,11 @@
 import { PostgresCreateTransactionRepository } from './create-transaction'
-import { transaction, user as fakeUser } from '../../../tests'
+import { transaction, user } from '../../../tests'
 import { prisma } from '../../../../prisma/prisma'
 import dayjs from 'dayjs'
 
 describe('Create Transaction Use Case', () => {
     it('should create a transaction successfully', async () => {
-        const user = await prisma.user.create({ data: fakeUser })
+        await prisma.user.create({ data: user })
         const sut = new PostgresCreateTransactionRepository()
 
         const result = await sut.execute({ ...transaction, user_id: user.id })
@@ -22,7 +22,7 @@ describe('Create Transaction Use Case', () => {
     })
 
     it('should call Prisma with correct params', async () => {
-        const user = await prisma.user.create({ data: fakeUser })
+        await prisma.user.create({ data: user })
         const sut = new PostgresCreateTransactionRepository()
         const prismaSpy = jest.spyOn(prisma.transaction, 'create')
 
@@ -41,7 +41,7 @@ describe('Create Transaction Use Case', () => {
     })
 
     it('should throw if Prisma throws an error', async () => {
-        const user = await prisma.user.create({ data: fakeUser })
+        await prisma.user.create({ data: user })
         const sut = new PostgresCreateTransactionRepository()
         jest.spyOn(prisma.transaction, 'create').mockRejectedValueOnce(
             new Error(),

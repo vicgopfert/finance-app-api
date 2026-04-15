@@ -33,6 +33,14 @@ describe('Delete Transaction Repository', () => {
         expect(dayjs(result.date).year()).toBe(dayjs(transaction.date).year())
     })
 
+    it('should return null if transaction to delete does not exist', async () => {
+        const sut = new PostgresDeleteTransactionRepository()
+
+        const result = await sut.execute(fakeTransaction.id)
+
+        expect(result).toBeNull()
+    })
+
     it('should call Prisma with correct params', async () => {
         const { transaction } = await createUserAndTransactionOnDb()
         const sut = new PostgresDeleteTransactionRepository()
@@ -45,5 +53,17 @@ describe('Delete Transaction Repository', () => {
                 id: transaction.id,
             },
         })
+    })
+
+    it('should throw if Prisma throws an error', async () => {
+        const { transaction } = await createUserAndTransactionOnDb()
+        const sut = new PostgresDeleteTransactionRepository()
+        jest.spyOn(prisma.transaction, 'delete').mockRejectedValueOnce(
+            new Error(),
+        )
+
+        const promise = sut.execute(transaction.id)
+
+        await expect(promise).rejects.toThrow()
     })
 })

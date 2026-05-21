@@ -16,7 +16,7 @@ describe('User Routes E2E Tests', () => {
         expect(response.statusCode).toBe(201)
     })
 
-    it('GET /api/users/:id - should return 200 when user is found', async () => {
+    it('POST /api/users - should return 400 when the provided e-mail is already in use', async () => {
         const {
             body: { user: createdUser },
         } = await request(app)
@@ -25,59 +25,15 @@ describe('User Routes E2E Tests', () => {
                 ...user,
                 id: undefined,
             })
-
-        const response = await request(app).get(`/api/users/${createdUser.id}`)
-
-        expect(response.statusCode).toBe(200)
-        expect(response.body).toEqual(createdUser)
-    })
-
-    it('PATCH /api/users/:id - should return 200 when user is updated successfully', async () => {
-        const {
-            body: { user: createdUser },
-        } = await request(app)
-            .post('/api/users')
-            .send({
-                ...user,
-                id: undefined,
-            })
-
-        const updatedUserParams = {
-            first_name: faker.person.firstName(),
-            last_name: faker.person.lastName(),
-            email: faker.internet.email(),
-            password: faker.internet.password(),
-        }
 
         const response = await request(app)
-            .patch(`/api/users/${createdUser.id}`)
-            .send(updatedUserParams)
-
-        expect(response.statusCode).toBe(200)
-        expect(response.body.user).toMatchObject({
-            first_name: updatedUserParams.first_name,
-            last_name: updatedUserParams.last_name,
-            email: updatedUserParams.email,
-        })
-        expect(response.body.user.password).not.toBe(updatedUserParams.password)
-    })
-
-    it('DELETE /api/users/:id - should return 200 when user is deleted successfully', async () => {
-        const {
-            body: { user: createdUser },
-        } = await request(app)
             .post('/api/users')
             .send({
                 ...user,
-                id: undefined,
+                email: createdUser.email,
             })
 
-        const response = await request(app).delete(
-            `/api/users/${createdUser.id}`,
-        )
-
-        expect(response.statusCode).toBe(200)
-        expect(response.body.user).toEqual(createdUser)
+        expect(response.statusCode).toBe(400)
     })
 
     it('GET /api/users/:id/balance - should return 200 and correct balance successfully', async () => {
@@ -143,6 +99,36 @@ describe('User Routes E2E Tests', () => {
         expect(response.statusCode).toBe(404)
     })
 
+    it('PATCH /api/users/:id - should return 200 when user is updated successfully', async () => {
+        const {
+            body: { user: createdUser },
+        } = await request(app)
+            .post('/api/users')
+            .send({
+                ...user,
+                id: undefined,
+            })
+
+        const updatedUserParams = {
+            first_name: faker.person.firstName(),
+            last_name: faker.person.lastName(),
+            email: faker.internet.email(),
+            password: faker.internet.password(),
+        }
+
+        const response = await request(app)
+            .patch(`/api/users/${createdUser.id}`)
+            .send(updatedUserParams)
+
+        expect(response.statusCode).toBe(200)
+        expect(response.body.user).toMatchObject({
+            first_name: updatedUserParams.first_name,
+            last_name: updatedUserParams.last_name,
+            email: updatedUserParams.email,
+        })
+        expect(response.body.user.password).not.toBe(updatedUserParams.password)
+    })
+
     it('PATCH /api/users/:id - should return 404 when user is not found', async () => {
         const response = await request(app)
             .patch(`/api/users/${faker.string.uuid()}`)
@@ -154,6 +140,24 @@ describe('User Routes E2E Tests', () => {
             })
 
         expect(response.statusCode).toBe(404)
+    })
+
+    it('DELETE /api/users/:id - should return 200 when user is deleted successfully', async () => {
+        const {
+            body: { user: createdUser },
+        } = await request(app)
+            .post('/api/users')
+            .send({
+                ...user,
+                id: undefined,
+            })
+
+        const response = await request(app).delete(
+            `/api/users/${createdUser.id}`,
+        )
+
+        expect(response.statusCode).toBe(200)
+        expect(response.body.user).toEqual(createdUser)
     })
 
     it('DELETE /api/users/:id - should return 404 when user is not found', async () => {

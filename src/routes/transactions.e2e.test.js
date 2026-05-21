@@ -60,6 +60,14 @@ describe('Transaction Routes E2E Tests', () => {
         expect(response.body[0]).toEqual(createdTransaction)
     })
 
+    it('GET /api/transaction?userId - should return 404 when fetching transactions from a non-existent user', async () => {
+        const response = await request(app).get(
+            `/api/transactions?userId=${transaction.user_id}`,
+        )
+
+        expect(response.status).toBe(404)
+    })
+
     it('PATCH /api/transactions/:id - should return 200 when updating a transaction successfully', async () => {
         const {
             body: { user: createdUser },

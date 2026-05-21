@@ -25,6 +25,14 @@ describe('Update User Repository', () => {
         })
     })
 
+    it('should return null if user does not exist', async () => {
+        const sut = new PostgresUpdateUserRepository()
+
+        const result = await sut.execute(faker.string.uuid(), updateUserParams)
+
+        expect(result).toBeNull()
+    })
+
     it('should call Prisma with correct params', async () => {
         const user = await prisma.user.create({
             data: fakeUser,
@@ -43,10 +51,15 @@ describe('Update User Repository', () => {
     })
 
     it('should throw if Prisma throws an error', async () => {
+        const user = await prisma.user.create({
+            data: fakeUser,
+        })
+
         const sut = new PostgresUpdateUserRepository()
+
         jest.spyOn(prisma.user, 'update').mockRejectedValueOnce(new Error())
 
-        const promise = sut.execute(fakeUser.id, updateUserParams)
+        const promise = sut.execute(user.id, updateUserParams)
 
         await expect(promise).rejects.toThrow()
     })

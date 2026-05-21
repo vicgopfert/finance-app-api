@@ -155,4 +155,12 @@ describe('User Routes E2E Tests', () => {
 
         expect(response.statusCode).toBe(404)
     })
+
+    it('DELETE /api/users/:id - should return 404 when user is not found', async () => {
+        const response = await request(app).delete(
+            `/api/users/${faker.string.uuid()}`,
+        )
+
+        expect(response.statusCode).toBe(404)
+    })
 })

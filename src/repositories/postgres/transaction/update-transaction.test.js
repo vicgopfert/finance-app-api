@@ -51,6 +51,14 @@ describe('Update Transaction Repository', () => {
         )
     })
 
+    it('should return null if transaction does not exist', async () => {
+        const sut = new PostgresUpdateTransactionRepository()
+
+        const result = await sut.execute(faker.string.uuid(), fakeTransaction)
+
+        expect(result).toBeNull()
+    })
+
     it('should call Prisma with correct params', async () => {
         const { transaction } = await createUserAndTransactionOnDb()
         const sut = new PostgresUpdateTransactionRepository()

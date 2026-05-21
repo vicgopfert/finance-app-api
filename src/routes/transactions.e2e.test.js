@@ -30,6 +30,17 @@ describe('Transaction Routes E2E Tests', () => {
         )
     })
 
+    it('POST /api/transactions - should return 404 when creating a transaction for a non-existent user', async () => {
+        const response = await request(app)
+            .post('/api/transactions')
+            .send({
+                ...transaction,
+                id: undefined,
+            })
+
+        expect(response.status).toBe(404)
+    })
+
     it('GET /api/transaction?userId - should return 200 when fetching transactions successfully', async () => {
         const {
             body: { user: createdUser },

@@ -92,6 +92,17 @@ describe('Transaction Routes E2E Tests', () => {
         expect(response.body.transaction.type).toBe(TransactionType.INVESTMENT)
     })
 
+    it('PATCH /api/transactions/:id - should return 404 when updating a non-existing transaction', async () => {
+        const response = await request(app)
+            .patch(`/api/transactions/${transaction.id}`)
+            .send({
+                amount: 200,
+                type: TransactionType.INVESTMENT,
+            })
+
+        expect(response.status).toBe(404)
+    })
+
     it('DELETE /api/transactions/:id - should return 200 when deleting a transaction successfully', async () => {
         const {
             body: { user: createdUser },

@@ -28,4 +28,34 @@ describe('Transaction Routes E2E Tests', () => {
             String(transaction.amount),
         )
     })
+
+    it('GET /api/transaction?userId - should return 200 when fetching transactions successfully', async () => {
+        const {
+            body: { user: createdUser },
+        } = await request(app)
+            .post('/api/users')
+            .send({
+                ...user,
+                id: undefined,
+            })
+
+        const {
+            body: { transaction: createdTransaction },
+        } = await request(app)
+            .post('/api/transactions')
+            .send({
+                ...transaction,
+                user_id: createdUser.id,
+                id: undefined,
+            })
+
+        const response = await request(app).get(
+            `/api/transactions?userId=${createdUser.id}`,
+        )
+
+        expect(response.status).toBe(200)
+        expect(response.body).toBeInstanceOf(Array)
+        expect(response.body.length).toBe(1)
+        expect(response.body[0]).toEqual(createdTransaction)
+    })
 })

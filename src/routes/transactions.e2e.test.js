@@ -130,4 +130,12 @@ describe('Transaction Routes E2E Tests', () => {
         expect(response.status).toBe(200)
         expect(response.body.transaction.id).toBe(createdTransaction.id)
     })
+
+    it('DELETE /api/transactions/:id - should return 404 when deleting a non-existing transaction', async () => {
+        const response = await request(app).delete(
+            `/api/transactions/${transaction.id}`,
+        )
+
+        expect(response.status).toBe(404)
+    })
 })

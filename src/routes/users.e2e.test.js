@@ -36,6 +36,77 @@ describe('User Routes E2E Tests', () => {
         expect(response.statusCode).toBe(400)
     })
 
+    it('POST /api/users - should return 400 when required fields are missing', async () => {
+        const response = await request(app).post('/api/users').send({
+            first_name: faker.person.firstName(),
+        })
+
+        expect(response.statusCode).toBe(400)
+    })
+
+    it('POST /api/users - should return 400 when e-mail is invalid', async () => {
+        const response = await request(app)
+            .post('/api/users')
+            .send({
+                ...user,
+                id: undefined,
+                email: 'invalid-email',
+            })
+
+        expect(response.statusCode).toBe(400)
+    })
+
+    it('POST /api/users - should return 400 when password is too weak', async () => {
+        const response = await request(app)
+            .post('/api/users')
+            .send({
+                ...user,
+                id: undefined,
+                password: '123',
+            })
+
+        expect(response.statusCode).toBe(400)
+    })
+
+    it('GET /api/users/:id - should return 200 and user data successfully', async () => {
+        const {
+            body: { user: createdUser },
+        } = await request(app)
+            .post('/api/users')
+            .send({
+                ...user,
+                id: undefined,
+            })
+
+        const response = await request(app).get(`/api/users/${createdUser.id}`)
+
+        expect(response.statusCode).toBe(200)
+        expect(response.body).toEqual(createdUser)
+    })
+
+    it('GET /api/users/:id/balance - should return 200 and balance 0 when user has no transactions', async () => {
+        const {
+            body: { user: createdUser },
+        } = await request(app)
+            .post('/api/users')
+            .send({
+                ...user,
+                id: undefined,
+            })
+
+        const response = await request(app).get(
+            `/api/users/${createdUser.id}/balance`,
+        )
+
+        expect(response.statusCode).toBe(200)
+        expect(response.body).toEqual({
+            earnings: '0',
+            expenses: '0',
+            investments: '0',
+            balance: '0',
+        })
+    })
+
     it('GET /api/users/:id/balance - should return 200 and correct balance successfully', async () => {
         const {
             body: { user: createdUser },

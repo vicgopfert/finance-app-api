@@ -1,6 +1,7 @@
 import request from 'supertest'
 import { app } from '../app.js'
 import { transaction, user } from '../tests/index.js'
+import { TransactionType } from '@prisma/client'
 
 describe('Transaction Routes E2E Tests', () => {
     it('POST /api/transactions - should return 201 when creating a transaction successfully', async () => {
@@ -57,5 +58,37 @@ describe('Transaction Routes E2E Tests', () => {
         expect(response.body).toBeInstanceOf(Array)
         expect(response.body.length).toBe(1)
         expect(response.body[0]).toEqual(createdTransaction)
+    })
+
+    it('PATCH /api/transactions/:id - should return 200 when updating a transaction successfully', async () => {
+        const {
+            body: { user: createdUser },
+        } = await request(app)
+            .post('/api/users')
+            .send({
+                ...user,
+                id: undefined,
+            })
+
+        const {
+            body: { transaction: createdTransaction },
+        } = await request(app)
+            .post('/api/transactions')
+            .send({
+                ...transaction,
+                user_id: createdUser.id,
+                id: undefined,
+            })
+
+        const response = await request(app)
+            .patch(`/api/transactions/${createdTransaction.id}`)
+            .send({
+                amount: 200,
+                type: TransactionType.INVESTMENT,
+            })
+
+        expect(response.status).toBe(200)
+        expect(response.body.transaction.amount).toBe('200')
+        expect(response.body.transaction.type).toBe(TransactionType.INVESTMENT)
     })
 })

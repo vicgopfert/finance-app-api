@@ -17,7 +17,7 @@
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/User"
+                            "$ref": "#/definitions/CreateUserParams"
                         }
                     }
                 ],
@@ -27,6 +27,36 @@
                     },
                     "400": {
                         "description": "Invalid params"
+                    },
+                    "500": {
+                        "description": "Internal server error"
+                    }
+                }
+            }
+        },
+        "/api/users/{id}": {
+            "get": {
+                "summary": "Get user by ID",
+                "description": "Endpoint to retrieve a user by their unique ID.",
+                "tags": ["Users"],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "type": "string",
+                        "description": "Unique ID of the user to get"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "User found successfully",
+                        "schema": {
+                            "$ref": "#/definitions/User"
+                        }
+                    },
+                    "404": {
+                        "description": "User not found"
                     },
                     "500": {
                         "description": "Internal server error"

@@ -52,6 +52,42 @@
                 }
             }
         },
+        "/api/users/{id}/balance": {
+            "get": {
+                "summary": "Get user balance by ID",
+                "description": "Endpoint to retrieve a user's balance information by their unique ID.",
+                "tags": ["Users"],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "type": "string",
+                        "description": "ID of the user to get balance information for"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "User balance information retrieved successfully",
+                        "schema": {
+                            "$ref": "#/definitions/UserBalance"
+                        }
+                    },
+                    "404": {
+                        "description": "User not found",
+                        "schema": {
+                            "$ref": "#/definitions/UserNotFoundResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/InternalServerErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/api/users/{id}": {
             "get": {
                 "summary": "Get user by ID",
@@ -220,6 +256,31 @@
                 }
             }
         },
+        "UserBalance": {
+            "type": "object",
+            "properties": {
+                "earnings": {
+                    "type": "string",
+                    "example": "5000.0",
+                    "description": "Total earnings of the user"
+                },
+                "expenses": {
+                    "type": "string",
+                    "example": "2000.0",
+                    "description": "Total expenses of the user"
+                },
+                "investments": {
+                    "type": "string",
+                    "example": "1000.0",
+                    "description": "Total investments of the user"
+                },
+                "balance": {
+                    "type": "string",
+                    "example": "2000.0",
+                    "description": "Current balance of the user (earnings - expenses + investments)"
+                }
+            }
+        },
         "CreateUserParams": {
             "type": "object",
             "properties": {
@@ -250,7 +311,7 @@
             "properties": {
                 "message": {
                     "type": "string",
-                    "example": "User not found"
+                    "example": "User with id 123e4567-e89b-12d3-a456-426614174000 not found."
                 }
             }
         },

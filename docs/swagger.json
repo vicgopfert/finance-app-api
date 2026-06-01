@@ -45,7 +45,7 @@
                         "in": "path",
                         "required": true,
                         "type": "string",
-                        "description": "Unique ID of the user to get"
+                        "description": "ID of the user to get"
                     }
                 ],
                 "responses": {
@@ -54,6 +54,31 @@
                         "schema": {
                             "$ref": "#/definitions/User"
                         }
+                    },
+                    "404": {
+                        "description": "User not found"
+                    },
+                    "500": {
+                        "description": "Internal server error"
+                    }
+                }
+            },
+            "delete": {
+                "summary": "Delete user by ID",
+                "description": "Endpoint to delete a user by their unique ID.",
+                "tags": ["Users"],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "type": "string",
+                        "description": "ID of the user to delete"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "User deleted successfully"
                     },
                     "404": {
                         "description": "User not found"

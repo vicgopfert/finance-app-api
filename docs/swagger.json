@@ -223,6 +223,203 @@
                     }
                 }
             }
+        },
+        "/api/transactions": {
+            "get": {
+                "summary": "Get transactions by user ID",
+                "description": "Endpoint to retrieve transactions for a given user by their unique ID (query param `userId`).",
+                "tags": ["Transactions"],
+                "parameters": [
+                    {
+                        "name": "userId",
+                        "in": "query",
+                        "required": true,
+                        "type": "string",
+                        "description": "ID of the user to get transactions for"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Transactions retrieved successfully",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/Transaction"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid params",
+                        "schema": {
+                            "$ref": "#/definitions/InvalidParamsResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "User not found",
+                        "schema": {
+                            "$ref": "#/definitions/UserNotFoundResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/InternalServerErrorResponse"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "summary": "Create a new transaction",
+                "description": "Endpoint to create a new transaction in the finance app.",
+                "tags": ["Transactions"],
+                "parameters": [
+                    {
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/CreateTransactionParams"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Transaction created successfully",
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "message": {
+                                    "type": "string",
+                                    "example": "Transaction created successfully"
+                                },
+                                "transaction": {
+                                    "$ref": "#/definitions/Transaction"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid params",
+                        "schema": {
+                            "$ref": "#/definitions/InvalidParamsResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "User not found",
+                        "schema": {
+                            "$ref": "#/definitions/UserNotFoundResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/InternalServerErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/transactions/{id}": {
+            "patch": {
+                "summary": "Update transaction by ID",
+                "description": "Endpoint to update a transaction's information by its unique ID.",
+                "tags": ["Transactions"],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "type": "string",
+                        "description": "ID of the transaction to update"
+                    },
+                    {
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/UpdateTransactionParams"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Transaction updated successfully",
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "message": {
+                                    "type": "string",
+                                    "example": "Transaction updated successfully"
+                                },
+                                "transaction": {
+                                    "$ref": "#/definitions/Transaction"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid params",
+                        "schema": {
+                            "$ref": "#/definitions/InvalidParamsResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Transaction not found",
+                        "schema": {
+                            "$ref": "#/definitions/TransactionNotFoundResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/InternalServerErrorResponse"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "summary": "Delete transaction by ID",
+                "description": "Endpoint to delete a transaction by its unique ID.",
+                "tags": ["Transactions"],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "type": "string",
+                        "description": "ID of the transaction to delete"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Transaction deleted successfully",
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "message": {
+                                    "type": "string",
+                                    "example": "Transaction deleted successfully"
+                                },
+                                "transaction": {
+                                    "$ref": "#/definitions/Transaction"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Transaction not found",
+                        "schema": {
+                            "$ref": "#/definitions/TransactionNotFoundResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/InternalServerErrorResponse"
+                        }
+                    }
+                }
+            }
         }
     },
     "definitions": {
@@ -330,6 +527,105 @@
                 "message": {
                     "type": "string",
                     "example": "Internal server error"
+                }
+            }
+        },
+        "Transaction": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "string",
+                    "example": "123e4567-e89b-12d3-a456-426614174000",
+                    "description": "Unique identifier for the transaction"
+                },
+                "user_id": {
+                    "type": "string",
+                    "example": "123e4567-e89b-12d3-a456-426614174000",
+                    "description": "ID of the user owner of the transaction"
+                },
+                "name": {
+                    "type": "string",
+                    "example": "Salary",
+                    "description": "Transaction name or description"
+                },
+                "date": {
+                    "type": "string",
+                    "example": "2026-06-01T12:00:00Z",
+                    "description": "ISO 8601 datetime of the transaction"
+                },
+                "type": {
+                    "type": "string",
+                    "example": "EARNING",
+                    "description": "Transaction type: EXPENSE, EARNING or INVESTMENT"
+                },
+                "amount": {
+                    "type": "string",
+                    "example": "10000.0",
+                    "description": "Transaction amount"
+                }
+            }
+        },
+        "CreateTransactionParams": {
+            "type": "object",
+            "properties": {
+                "user_id": {
+                    "type": "string",
+                    "example": "123e4567-e89b-12d3-a456-426614174000",
+                    "description": "ID of the user who owns the transaction"
+                },
+                "name": {
+                    "type": "string",
+                    "example": "Salary",
+                    "description": "Transaction name or description"
+                },
+                "date": {
+                    "type": "string",
+                    "example": "2026-06-01T12:00:00Z",
+                    "description": "ISO 8601 datetime of the transaction"
+                },
+                "type": {
+                    "type": "string",
+                    "example": "EARNING",
+                    "description": "Transaction type: EXPENSE, EARNING or INVESTMENT"
+                },
+                "amount": {
+                    "type": "number",
+                    "example": 10000.0,
+                    "description": "Transaction amount"
+                }
+            }
+        },
+        "UpdateTransactionParams": {
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string",
+                    "example": "Updated name",
+                    "description": "Transaction name or description"
+                },
+                "date": {
+                    "type": "string",
+                    "example": "2026-06-02T08:00:00Z",
+                    "description": "ISO 8601 datetime of the transaction"
+                },
+                "type": {
+                    "type": "string",
+                    "example": "EARNING",
+                    "description": "Transaction type: EXPENSE, EARNING or INVESTMENT"
+                },
+                "amount": {
+                    "type": "number",
+                    "example": 150.0,
+                    "description": "Transaction amount"
+                }
+            }
+        },
+        "TransactionNotFoundResponse": {
+            "type": "object",
+            "properties": {
+                "message": {
+                    "type": "string",
+                    "example": "Transaction with id 123e4567-e89b-12d3-a456-426614174000 not found."
                 }
             }
         }

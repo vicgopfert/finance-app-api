@@ -4,5 +4,92 @@
         "version": "1.0.0",
         "title": "Finance App API",
         "description": "API Finance App that allows users to manage their finances."
+    },
+    "paths": {
+        "/api/users": {
+            "post": {
+                "summary": "Create a new user",
+                "description": "Endpoint to create a new user in the finance app.",
+                "tags": ["Users"],
+                "parameters": [
+                    {
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/User"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "User created successfully"
+                    },
+                    "400": {
+                        "description": "Invalid params"
+                    },
+                    "500": {
+                        "description": "Internal server error"
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "User": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "string",
+                    "example": "123e4567-e89b-12d3-a456-426614174000",
+                    "description": "Unique identifier for the user"
+                },
+                "first_name": {
+                    "type": "string",
+                    "example": "John",
+                    "description": "First name of the user"
+                },
+                "last_name": {
+                    "type": "string",
+                    "example": "Doe",
+                    "description": "Last name of the user"
+                },
+                "email": {
+                    "type": "string",
+                    "example": "user@example.com",
+                    "description": "Email address of the user"
+                },
+                "password": {
+                    "type": "string",
+                    "example": "password123",
+                    "description": "Password of the user"
+                }
+            }
+        },
+        "CreateUserParams": {
+            "type": "object",
+            "properties": {
+                "first_name": {
+                    "type": "string",
+                    "example": "John",
+                    "description": "First name of the user"
+                },
+                "last_name": {
+                    "type": "string",
+                    "example": "Doe",
+                    "description": "Last name of the user"
+                },
+                "email": {
+                    "type": "string",
+                    "example": "user@example.com",
+                    "description": "Email address of the user"
+                },
+                "password": {
+                    "type": "string",
+                    "example": "password123",
+                    "description": "Password of the user"
+                }
+            }
+        }
     }
 }

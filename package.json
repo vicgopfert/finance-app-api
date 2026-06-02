@@ -4,11 +4,14 @@
     "main": "index.js",
     "type": "module",
     "scripts": {
+        "start:dev": "node --watch index.js",
+        "postinstall": "husky install && npx prisma generate",
         "test": "dotenv -e .env.test -- jest --passWithNoTests --silent --runInBand --detectOpenHandles --forceExit",
         "test:watch": "npm run test -- --watch --runInBand",
         "test:coverage": "npm run test -- --coverage",
-        "postinstall": "husky install && npx prisma generate",
-        "start:dev": "node --watch index.js"
+        "eslint:check": "eslint src --ext .js",
+        "prettier:format": "prettier --write src",
+        "prettier:check": "prettier --check src"
     },
     "keywords": [],
     "author": "",

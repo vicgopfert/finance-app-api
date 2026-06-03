@@ -1,10 +1,10 @@
-import express from 'express'
-import { usersRouter, transactionsRouter } from './routes/index.js'
-import swaggerUi from 'swagger-ui-express'
-import fs from 'fs'
-import path from 'path'
+const express = require('express')
+const { usersRouter, transactionsRouter } = require('./routes')
+const swaggerUi = require('swagger-ui-express')
+const fs = require('fs')
+const path = require('path')
 
-export const app = express()
+const app = express()
 
 app.use(express.json())
 
@@ -16,3 +16,5 @@ const swaggerDocument = JSON.parse(
 )
 
 app.use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument))
+
+module.exports = { app }

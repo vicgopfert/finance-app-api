@@ -21,15 +21,13 @@ jobs:
             - name: Install dependencies
               run: npm ci
 
-            - name: Start PostgreSQL Test Container
+            - name: Start PostgreSQL Test Container (with healthcheck wait)
               env:
                   POSTGRES_USER: postgres
                   POSTGRES_PASSWORD: test_password
                   POSTGRES_DB: financeapp
+                  POSTGRES_PORT: 5432
                   POSTGRES_TEST_PORT: 5433
-              run: docker compose up -d postgres-test
-
-            - name: Wait for PostgreSQL
               run: docker compose up -d --wait postgres-test
 
             - name: Apply migrations
@@ -50,7 +48,7 @@ jobs:
 
             - name: Stop Containers
               if: always()
-              run: docker compose down
+              run: docker compose down --volumes
 
     migrate:
         runs-on: ubuntu-latest
@@ -68,6 +66,13 @@ jobs:
 
             - name: Install dependencies
               run: npm ci
+
+            - name: Validate DATABASE_URL secret
+              run: |
+                  if [ -z "${{ secrets.DATABASE_URL }}" ]; then
+                    echo "::error::DATABASE_URL secret is not set in the 'production' environment"
+                    exit 1
+                  fi
 
             - name: Run migrations
               env:

@@ -22,15 +22,15 @@ jobs:
               run: npm ci
 
             - name: Start PostgreSQL Test Container
+              env:
+                  POSTGRES_USER: postgres
+                  POSTGRES_PASSWORD: test_password
+                  POSTGRES_DB: financeapp
+                  POSTGRES_TEST_PORT: 5433
               run: docker compose up -d postgres-test
 
             - name: Wait for PostgreSQL
-              run: |
-                  for i in {1..30}; do
-                    docker compose exec postgres-test pg_isready -U postgres && exit 0
-                    sleep 1
-                  done
-                  exit 1
+              run: docker compose up -d --wait postgres-test
 
             - name: Apply migrations
               env:

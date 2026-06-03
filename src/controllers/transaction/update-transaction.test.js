@@ -60,9 +60,11 @@ describe('Update Transaction Controller', () => {
     it('should return 404 if UpdateTransactionUseCase throws TransactionNotFoundError', async () => {
         const { sut, updateTransactionUseCase } = makeSut()
 
-        jest.spyOn(updateTransactionUseCase, 'execute').mockRejectedValueOnce(
-            new TransactionNotFoundError(httpRequest.params.id),
-        )
+        import.meta.jest
+            .spyOn(updateTransactionUseCase, 'execute')
+            .mockRejectedValueOnce(
+                new TransactionNotFoundError(httpRequest.params.id),
+            )
 
         const result = await sut.execute(httpRequest)
 
@@ -160,9 +162,9 @@ describe('Update Transaction Controller', () => {
     it('should return 500 if UpdateTransactionUseCase throws an unexpected error', async () => {
         const { sut, updateTransactionUseCase } = makeSut()
 
-        jest.spyOn(updateTransactionUseCase, 'execute').mockRejectedValueOnce(
-            new Error(),
-        )
+        import.meta.jest
+            .spyOn(updateTransactionUseCase, 'execute')
+            .mockRejectedValueOnce(new Error())
 
         const result = await sut.execute(httpRequest)
 
@@ -173,7 +175,10 @@ describe('Update Transaction Controller', () => {
     it('should call UpdateTransactionUseCase with correct params', async () => {
         const { sut, updateTransactionUseCase } = makeSut()
 
-        const executeSpy = jest.spyOn(updateTransactionUseCase, 'execute')
+        const executeSpy = import.meta.jest.spyOn(
+            updateTransactionUseCase,
+            'execute',
+        )
 
         await sut.execute(httpRequest)
 

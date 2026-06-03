@@ -59,9 +59,11 @@ describe('Get Transactions By User ID Controller', () => {
     it('should return 404 if GetTransactionsByUserIdUseCase throws UserNotFoundError', async () => {
         const { sut, getUserByIdUseCase } = makeSut()
 
-        jest.spyOn(getUserByIdUseCase, 'execute').mockRejectedValueOnce(
-            new UserNotFoundError(httpRequest.query.userId),
-        )
+        import.meta.jest
+            .spyOn(getUserByIdUseCase, 'execute')
+            .mockRejectedValueOnce(
+                new UserNotFoundError(httpRequest.query.userId),
+            )
 
         const result = await sut.execute(httpRequest)
 
@@ -75,9 +77,9 @@ describe('Get Transactions By User ID Controller', () => {
     it('should return 500 if GetUserByIdUseCase throws an unexpected error', async () => {
         const { sut, getUserByIdUseCase } = makeSut()
 
-        jest.spyOn(getUserByIdUseCase, 'execute').mockRejectedValueOnce(
-            new Error(),
-        )
+        import.meta.jest
+            .spyOn(getUserByIdUseCase, 'execute')
+            .mockRejectedValueOnce(new Error())
 
         const result = await sut.execute(httpRequest)
 
@@ -88,7 +90,7 @@ describe('Get Transactions By User ID Controller', () => {
     it('should call GetUserByIdUseCase with correct params', async () => {
         const { sut, getUserByIdUseCase } = makeSut()
 
-        const executeSpy = jest.spyOn(getUserByIdUseCase, 'execute')
+        const executeSpy = import.meta.jest.spyOn(getUserByIdUseCase, 'execute')
 
         await sut.execute(httpRequest)
 

@@ -49,9 +49,9 @@ describe('Get User Balance Controller', () => {
     it('should returns 404 if GetUserBalanceUseCase throws UserNotFoundError', async () => {
         const { sut, getUserBalanceUseCase } = makeSut()
 
-        jest.spyOn(getUserBalanceUseCase, 'execute').mockRejectedValueOnce(
-            new UserNotFoundError(httpRequest.params.id),
-        )
+        import.meta.jest
+            .spyOn(getUserBalanceUseCase, 'execute')
+            .mockRejectedValueOnce(new UserNotFoundError(httpRequest.params.id))
 
         const result = await sut.execute(httpRequest)
 
@@ -65,9 +65,9 @@ describe('Get User Balance Controller', () => {
     it('should returns 500 if GetUserBalanceUseCase throws an unexpected error', async () => {
         const { sut, getUserBalanceUseCase } = makeSut()
 
-        jest.spyOn(getUserBalanceUseCase, 'execute').mockRejectedValueOnce(
-            new Error(),
-        )
+        import.meta.jest
+            .spyOn(getUserBalanceUseCase, 'execute')
+            .mockRejectedValueOnce(new Error())
 
         const result = await sut.execute(httpRequest)
 
@@ -78,7 +78,10 @@ describe('Get User Balance Controller', () => {
     it('should call GetUserBalanceUseCase with correct params', async () => {
         const { sut, getUserBalanceUseCase } = makeSut()
 
-        const executeSpy = jest.spyOn(getUserBalanceUseCase, 'execute')
+        const executeSpy = import.meta.jest.spyOn(
+            getUserBalanceUseCase,
+            'execute',
+        )
 
         await sut.execute(httpRequest)
 

@@ -42,7 +42,7 @@ describe('Update Transaction Use Case', () => {
     it('should call UpdateTransactionRepository with correct params', async () => {
         const { sut, updateTransactionRepository } = makeSut()
 
-        const updateTransactionSpy = jest.spyOn(
+        const updateTransactionSpy = import.meta.jest.spyOn(
             updateTransactionRepository,
             'execute',
         )
@@ -59,10 +59,9 @@ describe('Update Transaction Use Case', () => {
     it('should throw TransactionNotFoundError if UpdateTransactionRepository returns null', async () => {
         const { sut, updateTransactionRepository } = makeSut()
 
-        jest.spyOn(
-            updateTransactionRepository,
-            'execute',
-        ).mockResolvedValueOnce(null)
+        import.meta.jest
+            .spyOn(updateTransactionRepository, 'execute')
+            .mockResolvedValueOnce(null)
 
         const transactionId = faker.string.uuid()
         const promise = sut.execute(transactionId, updateTransactionParams)
@@ -75,9 +74,9 @@ describe('Update Transaction Use Case', () => {
     it('should throw if UpdateTransactionRepository throws', async () => {
         const { sut, updateTransactionRepository } = makeSut()
 
-        jest.spyOn(updateTransactionRepository, 'execute').mockRejectedValue(
-            new Error(),
-        )
+        import.meta.jest
+            .spyOn(updateTransactionRepository, 'execute')
+            .mockRejectedValue(new Error())
 
         const promise = sut.execute(
             faker.string.uuid(),

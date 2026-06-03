@@ -27,7 +27,10 @@ describe('Get User Balance by ID Use Case', () => {
     it('should call GetUserByIdRepository with correct params', async () => {
         const { sut, getUserByIdRepository } = makeSut()
 
-        const getUserByIdSpy = jest.spyOn(getUserByIdRepository, 'execute')
+        const getUserByIdSpy = import.meta.jest.spyOn(
+            getUserByIdRepository,
+            'execute',
+        )
 
         const userId = faker.string.uuid()
         await sut.execute(userId)
@@ -38,7 +41,9 @@ describe('Get User Balance by ID Use Case', () => {
     it('should throw UserNotFoundError if GetUserByIdRepository returns null', async () => {
         const { sut, getUserByIdRepository } = makeSut()
 
-        jest.spyOn(getUserByIdRepository, 'execute').mockResolvedValue(null)
+        import.meta.jest
+            .spyOn(getUserByIdRepository, 'execute')
+            .mockResolvedValue(null)
 
         const userId = faker.string.uuid()
 
@@ -50,9 +55,9 @@ describe('Get User Balance by ID Use Case', () => {
     it('should throw if GetUserByIdRepository throws', async () => {
         const { sut, getUserByIdRepository } = makeSut()
 
-        jest.spyOn(getUserByIdRepository, 'execute').mockRejectedValue(
-            new Error(),
-        )
+        import.meta.jest
+            .spyOn(getUserByIdRepository, 'execute')
+            .mockRejectedValue(new Error())
 
         const promise = sut.execute(faker.string.uuid())
 

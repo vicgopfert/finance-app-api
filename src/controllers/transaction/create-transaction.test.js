@@ -231,9 +231,11 @@ describe('Create Transaction Controller', () => {
     it('should return 500 if CreateTransactionUseCase throws UserNotFoundError', async () => {
         const { sut, createTransactionUseCase } = makeSut()
 
-        jest.spyOn(createTransactionUseCase, 'execute').mockRejectedValueOnce(
-            new UserNotFoundError(httpRequest.body.user_id),
-        )
+        import.meta.jest
+            .spyOn(createTransactionUseCase, 'execute')
+            .mockRejectedValueOnce(
+                new UserNotFoundError(httpRequest.body.user_id),
+            )
 
         const result = await sut.execute(httpRequest)
 
@@ -247,9 +249,9 @@ describe('Create Transaction Controller', () => {
     it('should return 500 if CreateTransactionUseCase throws an unexpected error', async () => {
         const { sut, createTransactionUseCase } = makeSut()
 
-        jest.spyOn(createTransactionUseCase, 'execute').mockRejectedValueOnce(
-            new Error(),
-        )
+        import.meta.jest
+            .spyOn(createTransactionUseCase, 'execute')
+            .mockRejectedValueOnce(new Error())
 
         const result = await sut.execute(httpRequest)
 
@@ -260,7 +262,10 @@ describe('Create Transaction Controller', () => {
     it('should call CreateTransactionUseCase with correct params', async () => {
         const { sut, createTransactionUseCase } = makeSut()
 
-        const executeSpy = jest.spyOn(createTransactionUseCase, 'execute')
+        const executeSpy = import.meta.jest.spyOn(
+            createTransactionUseCase,
+            'execute',
+        )
 
         await sut.execute(httpRequest)
 

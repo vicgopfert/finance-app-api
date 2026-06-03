@@ -6,7 +6,7 @@
     "scripts": {
         "start:dev": "node --watch index.js",
         "postinstall": "husky install && npx prisma generate",
-        "test": "dotenv -e .env.test -- jest --passWithNoTests --silent --runInBand --detectOpenHandles --forceExit",
+        "test": "dotenv -e .env.test -- node --experimental-vm-modules node_modules/jest/bin/jest.js --passWithNoTests --silent --runInBand --detectOpenHandles --forceExit",
         "test:watch": "npm run test -- --watch --runInBand",
         "test:coverage": "npm run test -- --coverage",
         "eslint:check": "eslint src --ext .js",

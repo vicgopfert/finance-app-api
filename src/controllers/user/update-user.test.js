@@ -60,9 +60,9 @@ describe('Update User Controller', () => {
     it('should return 404 if UpdateUserUseCase throws UserNotFoundError', async () => {
         const { sut, updateUserUseCase } = makeSut()
 
-        jest.spyOn(updateUserUseCase, 'execute').mockRejectedValueOnce(
-            new UserNotFoundError(httpRequest.params.id),
-        )
+        import.meta.jest
+            .spyOn(updateUserUseCase, 'execute')
+            .mockRejectedValueOnce(new UserNotFoundError(httpRequest.params.id))
 
         const result = await sut.execute(httpRequest)
 
@@ -112,9 +112,11 @@ describe('Update User Controller', () => {
     it('should return 500 if UpdateUserUseCase throws EmailIsAlreadyInUseError', async () => {
         const { sut, updateUserUseCase } = makeSut()
 
-        jest.spyOn(updateUserUseCase, 'execute').mockRejectedValueOnce(
-            new EmailAlreadyInUseError(httpRequest.body.email),
-        )
+        import.meta.jest
+            .spyOn(updateUserUseCase, 'execute')
+            .mockRejectedValueOnce(
+                new EmailAlreadyInUseError(httpRequest.body.email),
+            )
 
         const result = await sut.execute(httpRequest)
 
@@ -146,9 +148,9 @@ describe('Update User Controller', () => {
     it('should return 500 if UpdateUserUseCase throws an unexpected error', async () => {
         const { sut, updateUserUseCase } = makeSut()
 
-        jest.spyOn(updateUserUseCase, 'execute').mockRejectedValueOnce(
-            new Error(),
-        )
+        import.meta.jest
+            .spyOn(updateUserUseCase, 'execute')
+            .mockRejectedValueOnce(new Error())
 
         const result = await sut.execute(httpRequest)
 
@@ -159,7 +161,7 @@ describe('Update User Controller', () => {
     it('should call UpdateUserUseCase with correct params', async () => {
         const { sut, updateUserUseCase } = makeSut()
 
-        const executeSpy = jest.spyOn(updateUserUseCase, 'execute')
+        const executeSpy = import.meta.jest.spyOn(updateUserUseCase, 'execute')
 
         await sut.execute(httpRequest)
 

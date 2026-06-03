@@ -8,17 +8,36 @@ on:
 jobs:
     check:
         runs-on: ubuntu-latest
+
         steps:
             - name: Checkout code
-              uses: actions/checkout@v2
+              uses: actions/checkout@v4
 
             - name: Use Node.js
-              uses: actions/setup-node@v2
+              uses: actions/setup-node@v4
               with:
                   node-version: '20'
 
+            - name: Create .env.test
+              run: |
+                  echo "POSTGRES_USER=postgres" > .env.test
+                  echo "POSTGRES_PASSWORD=test_password" >> .env.test
+                  echo "POSTGRES_DB=financeapp" >> .env.test
+                  echo "POSTGRES_PORT=5432" >> .env.test
+                  echo "POSTGRES_TEST_PORT=5433" >> .env.test
+                  echo "DATABASE_URL=postgresql://postgres:test_password@localhost:5433/financeapp" >> .env.test
+
             - name: Install dependencies
-              run: npm install
+              run: npm ci
+
+            - name: Start PostgreSQL Test Container
+              run: docker compose --env-file .env.test up -d postgres-test
+
+            - name: Wait for PostgreSQL
+              run: sleep 15
+
+            - name: Apply migrations
+              run: npx dotenv -e .env.test -- prisma migrate deploy
 
             - name: ESLint
               run: npm run eslint:check
@@ -28,3 +47,7 @@ jobs:
 
             - name: Test
               run: npm run test
+
+            - name: Stop Containers
+              if: always()
+              run: docker compose --env-file .env.test down

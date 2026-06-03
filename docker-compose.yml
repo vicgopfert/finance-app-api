@@ -2,7 +2,7 @@ version: '3'
 
 services:
     postgres:
-        image: postgres:18
+        image: postgres:17
         container_name: finance-app-postgres
         environment:
             POSTGRES_USER: ${POSTGRES_USER}
@@ -11,10 +11,10 @@ services:
         ports:
             - '${POSTGRES_PORT}:5432'
         volumes:
-            - postgres-data:/var/lib/postgresql
+            - postgres-data:/var/lib/postgresql/data
 
     postgres-test:
-        image: postgres:18
+        image: postgres:17
         container_name: finance-app-postgres-test
         environment:
             POSTGRES_USER: ${POSTGRES_USER}
@@ -22,6 +22,9 @@ services:
             POSTGRES_DB: ${POSTGRES_DB}
         ports:
             - '${POSTGRES_TEST_PORT}:5432'
+        volumes:
+            - postgres-test-data:/var/lib/postgresql/data
 
 volumes:
     postgres-data:
+    postgres-test-data:

@@ -8,6 +8,7 @@ on:
 jobs:
     check:
         runs-on: ubuntu-latest
+
         steps:
             - name: Checkout code
               uses: actions/checkout@v4
@@ -17,26 +18,24 @@ jobs:
               with:
                   node-version: '20'
 
-            - name: Create .env.test
-              run: |
-                  echo "POSTGRES_USER=postgres" > .env.test
-                  echo "POSTGRES_PASSWORD=test_password" >> .env.test
-                  echo "POSTGRES_DB=financeapp" >> .env.test
-                  echo "POSTGRES_PORT=5432" >> .env.test
-                  echo "POSTGRES_TEST_PORT=5433" >> .env.test
-                  echo "DATABASE_URL=postgresql://postgres:test_password@localhost:5433/financeapp" >> .env.test
-
             - name: Install dependencies
               run: npm ci
 
             - name: Start PostgreSQL Test Container
-              run: docker compose --env-file .env.test up -d postgres-test
+              run: docker compose up -d postgres-test
 
             - name: Wait for PostgreSQL
-              run: sleep 15
+              run: |
+                  for i in {1..30}; do
+                    docker compose exec postgres-test pg_isready -U postgres && exit 0
+                    sleep 1
+                  done
+                  exit 1
 
             - name: Apply migrations
-              run: npx dotenv -e .env.test -- prisma migrate deploy
+              env:
+                  DATABASE_URL: postgresql://postgres:test_password@localhost:5433/financeapp
+              run: npx prisma migrate deploy
 
             - name: ESLint
               run: npm run eslint:check
@@ -45,16 +44,19 @@ jobs:
               run: npm run prettier:check
 
             - name: Test
+              env:
+                  DATABASE_URL: postgresql://postgres:test_password@localhost:5433/financeapp
               run: npm run test
 
             - name: Stop Containers
               if: always()
-              run: docker compose --env-file .env.test down
+              run: docker compose down
 
     migrate:
         runs-on: ubuntu-latest
         needs: check
         environment: production
+
         steps:
             - name: Checkout code
               uses: actions/checkout@v4
@@ -67,10 +69,7 @@ jobs:
             - name: Install dependencies
               run: npm ci
 
-            - name: Make envfile
-              uses: SpicyPizza/create-envfile@v2.0
-              with:
-                  envkey_DATABASE_URL: ${{ secrets.DATABASE_URL }}
-
             - name: Run migrations
+              env:
+                  DATABASE_URL: ${{ secrets.DATABASE_URL }}
               run: npx prisma migrate deploy

@@ -5,6 +5,7 @@
     "type": "module",
     "scripts": {
         "start:dev": "node --watch index.js",
+        "start": "node index.js",
         "postinstall": "husky install && npx prisma generate",
         "test": "cross-env NODE_OPTIONS=--experimental-vm-modules dotenv -e .env.test -- jest --passWithNoTests --silent --runInBand --detectOpenHandles --forceExit",
         "test:watch": "npm run test -- --watch --runInBand",

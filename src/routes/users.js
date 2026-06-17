@@ -5,6 +5,7 @@ import {
     generateGetUserBalanceController,
     generateGetUserByIdController,
     generateUpdateUserController,
+    generateLoginUserController,
 } from '../factories/controllers/user.js'
 
 export const usersRouter = Router()
@@ -36,5 +37,11 @@ usersRouter.patch('/:id', async (req, res) => {
 usersRouter.delete('/:id', async (req, res) => {
     const deleteUserController = generateDeleteUserController()
     const { statusCode, body } = await deleteUserController.execute(req)
+    res.status(statusCode).json(body)
+})
+
+usersRouter.post('/login', async (req, res) => {
+    const loginUserController = generateLoginUserController()
+    const { statusCode, body } = await loginUserController.execute(req)
     res.status(statusCode).json(body)
 })

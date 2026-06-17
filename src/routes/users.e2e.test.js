@@ -56,7 +56,7 @@ describe('User Routes E2E Tests', () => {
         expect(response.statusCode).toBe(400)
     })
 
-    it('POST /api/users - should return 400 when password is too weak', async () => {
+    it('POST /api/users - should return 400 when password is invalid', async () => {
         const response = await request(app)
             .post('/api/users')
             .send({
@@ -66,6 +66,53 @@ describe('User Routes E2E Tests', () => {
             })
 
         expect(response.statusCode).toBe(400)
+    })
+
+    it('POST /api/users/login - should return 200 and tokens when user credentials are valid', async () => {
+        const {
+            body: { user: createdUser },
+        } = await request(app)
+            .post('/api/users')
+            .send({
+                ...user,
+                id: undefined,
+            })
+
+        const response = await request(app).post('/api/users/login').send({
+            email: createdUser.email,
+            password: user.password,
+        })
+
+        expect(response.statusCode).toBe(200)
+        expect(response.body.tokens.accessToken).toBeDefined()
+        expect(response.body.tokens.refreshToken).toBeDefined()
+    })
+
+    it('POST /api/users/login - should return 401 when password is invalid', async () => {
+        const {
+            body: { user: createdUser },
+        } = await request(app)
+            .post('/api/users')
+            .send({
+                ...user,
+                id: undefined,
+            })
+
+        const response = await request(app).post('/api/users/login').send({
+            email: createdUser.email,
+            password: 'invalid-password',
+        })
+
+        expect(response.statusCode).toBe(401)
+    })
+
+    it('POST /api/users/login - should return 401 when user is not found', async () => {
+        const response = await request(app).post('/api/users/login').send({
+            email: 'non-existent@example.com',
+            password: 'any-password',
+        })
+
+        expect(response.statusCode).toBe(401)
     })
 
     it('GET /api/users/:id - should return 200 and user data successfully', async () => {

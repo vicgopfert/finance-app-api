@@ -19,7 +19,8 @@ export class CreateUserController {
 
             return created({
                 message: 'User created successfully',
-                user: createdUser,
+                user: createdUser.user,
+                tokens: createdUser.tokens,
             })
         } catch (error) {
             if (error instanceof z.ZodError) {

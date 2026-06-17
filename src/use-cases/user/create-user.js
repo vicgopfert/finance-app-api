@@ -6,11 +6,13 @@ export class CreateUserUseCase {
         createUserRepository,
         passwordHasherAdapter,
         idGeneratorAdapter,
+        tokenGeneratorAdapter,
     ) {
         this.getUserByEmailRepository = getUserByEmailRepository
         this.createUserRepository = createUserRepository
         this.passwordHasherAdapter = passwordHasherAdapter
         this.idGeneratorAdapter = idGeneratorAdapter
+        this.tokenGeneratorAdapter = tokenGeneratorAdapter
     }
 
     async execute(createUserParams) {
@@ -24,22 +26,23 @@ export class CreateUserUseCase {
             throw new EmailAlreadyInUseError(createUserParams.email)
         }
 
-        // gerar ID único para o usuário
         const userId = await this.idGeneratorAdapter.execute()
-        // criptografar a senha
+
         const hashedPassword = await this.passwordHasherAdapter.execute(
             createUserParams.password,
         )
-        // inserir o usuário no banco de dados
+
         const user = {
             ...createUserParams,
             id: userId,
             password: hashedPassword,
         }
 
-        // chamar o repositório para salvar o usuário
         const createUserRepository = this.createUserRepository
         const createdUser = await createUserRepository.execute(user)
-        return createdUser
+
+        const tokens = await this.tokenGeneratorAdapter.execute(userId)
+
+        return { user: createdUser, tokens: tokens }
     }
 }

@@ -4,16 +4,12 @@ export const auth = (req, res, next) => {
     try {
         const authHeader = req.headers.authorization
 
-        if (!authHeader?.startsWith('Bearer ')) {
+        const [scheme, accessToken] = authHeader?.split(' ') ?? []
+
+        if (scheme !== 'Bearer' || !accessToken) {
             return res.status(401).json({
-                message: 'Authorization header missing or malformed',
+                message: 'Unauthorized',
             })
-        }
-
-        const accessToken = authHeader.split(' ')[1]
-
-        if (!accessToken) {
-            return res.status(401).json({ message: 'Unauthorized' })
         }
 
         const decodedToken = jwt.verify(
@@ -32,7 +28,7 @@ export const auth = (req, res, next) => {
         }
 
         return res.status(401).json({
-            message: 'Invalid token',
+            message: 'Unauthorized',
         })
     }
 }

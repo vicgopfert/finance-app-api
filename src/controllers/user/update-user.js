@@ -1,3 +1,5 @@
+import { z } from 'zod'
+
 import { EmailAlreadyInUseError, UserNotFoundError } from '../../errors/user.js'
 import { updateUserSchema } from '../../schemas/user.js'
 import {
@@ -8,8 +10,6 @@ import {
     serverError,
     notFound,
 } from '../helpers/index.js'
-
-import { z } from 'zod'
 
 export class UpdateUserController {
     constructor(updateUserUseCase) {

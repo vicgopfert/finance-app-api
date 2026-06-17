@@ -22,3 +22,8 @@ export const notFound = (body) => ({
     statusCode: 404,
     body,
 })
+
+export const unauthorized = (body) => ({
+    statusCode: 401,
+    body,
+})

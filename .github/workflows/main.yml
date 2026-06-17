@@ -45,6 +45,8 @@ jobs:
             - name: Test
               env:
                   DATABASE_URL: postgresql://postgres:test_password@localhost:5433/financeapp
+                  JWT_ACCESS_TOKEN_SECRET: test-access-token-secret
+                  JWT_REFRESH_TOKEN_SECRET: test-refresh-token-secret
               run: npm run test
 
             - name: Stop Containers

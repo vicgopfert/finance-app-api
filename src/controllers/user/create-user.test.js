@@ -6,7 +6,13 @@ import { user } from '../../tests/index.js'
 describe('Create User Controller', () => {
     class CreateUserUseCaseStub {
         async execute() {
-            return user
+            return {
+                user,
+                tokens: {
+                    accessToken: 'any_access_token',
+                    refreshToken: 'any_refresh_token',
+                },
+            }
         }
     }
 

@@ -11,15 +11,25 @@ import { auth } from '../middlewares/auth.js'
 
 export const usersRouter = Router()
 
-usersRouter.get('/:id', auth, async (req, res) => {
+usersRouter.get('/', auth, async (req, res) => {
     const getUserByIdController = generateGetUserByIdController()
-    const { statusCode, body } = await getUserByIdController.execute(req)
+    const { statusCode, body } = await getUserByIdController.execute({
+        ...req,
+        params: {
+            id: req.user.userId,
+        },
+    })
     res.status(statusCode).json(body)
 })
 
-usersRouter.get('/:id/balance', auth, async (req, res) => {
+usersRouter.get('/balance', auth, async (req, res) => {
     const getUserBalanceController = generateGetUserBalanceController()
-    const { statusCode, body } = await getUserBalanceController.execute(req)
+    const { statusCode, body } = await getUserBalanceController.execute({
+        ...req,
+        params: {
+            id: req.user.userId,
+        },
+    })
     res.status(statusCode).json(body)
 })
 
@@ -29,15 +39,25 @@ usersRouter.post('/', async (req, res) => {
     res.status(statusCode).json(body)
 })
 
-usersRouter.patch('/:id', auth, async (req, res) => {
+usersRouter.patch('/', auth, async (req, res) => {
     const updateUserController = generateUpdateUserController()
-    const { statusCode, body } = await updateUserController.execute(req)
+    const { statusCode, body } = await updateUserController.execute({
+        ...req,
+        params: {
+            id: req.user.userId,
+        },
+    })
     res.status(statusCode).json(body)
 })
 
-usersRouter.delete('/:id', auth, async (req, res) => {
+usersRouter.delete('/', auth, async (req, res) => {
     const deleteUserController = generateDeleteUserController()
-    const { statusCode, body } = await deleteUserController.execute(req)
+    const { statusCode, body } = await deleteUserController.execute({
+        ...req,
+        params: {
+            id: req.user.userId,
+        },
+    })
     res.status(statusCode).json(body)
 })
 

@@ -115,7 +115,7 @@ describe('User Routes E2E Tests', () => {
         expect(response.statusCode).toBe(401)
     })
 
-    it('GET /api/users/:id - should return 200 and user data successfully', async () => {
+    it('GET /api/users - should return 200 and user data successfully', async () => {
         const {
             body: { user: createdUser, tokens },
         } = await request(app)
@@ -126,14 +126,14 @@ describe('User Routes E2E Tests', () => {
             })
 
         const response = await request(app)
-            .get(`/api/users/${createdUser.id}`)
+            .get('/api/users')
             .set('Authorization', `Bearer ${tokens.accessToken}`)
 
         expect(response.statusCode).toBe(200)
         expect(response.body).toEqual(createdUser)
     })
 
-    it('GET /api/users/:id/balance - should return 200 and correct balance successfully', async () => {
+    it('GET /api/users/balance - should return 200 and correct balance successfully', async () => {
         const {
             body: { user: createdUser, tokens },
         } = await request(app)
@@ -168,7 +168,7 @@ describe('User Routes E2E Tests', () => {
         })
 
         const response = await request(app)
-            .get(`/api/users/${createdUser.id}/balance`)
+            .get(`/api/users/balance`)
             .set('Authorization', `Bearer ${tokens.accessToken}`)
 
         expect(response.statusCode).toBe(200)
@@ -180,9 +180,9 @@ describe('User Routes E2E Tests', () => {
         })
     })
 
-    it('PATCH /api/users/:id - should return 200 when user is updated successfully', async () => {
+    it('PATCH /api/users - should return 200 when user is updated successfully', async () => {
         const {
-            body: { user: createdUser, tokens },
+            body: { tokens },
         } = await request(app)
             .post('/api/users')
             .send({
@@ -198,7 +198,7 @@ describe('User Routes E2E Tests', () => {
         }
 
         const response = await request(app)
-            .patch(`/api/users/${createdUser.id}`)
+            .patch('/api/users')
             .set('Authorization', `Bearer ${tokens.accessToken}`)
             .send(updatedUserParams)
 
@@ -211,7 +211,7 @@ describe('User Routes E2E Tests', () => {
         expect(response.body.user.password).not.toBe(updatedUserParams.password)
     })
 
-    it('DELETE /api/users/:id - should return 200 when user is deleted successfully', async () => {
+    it('DELETE /api/users - should return 200 when user is deleted successfully', async () => {
         const {
             body: { user: createdUser, tokens },
         } = await request(app)
@@ -222,7 +222,7 @@ describe('User Routes E2E Tests', () => {
             })
 
         const response = await request(app)
-            .delete(`/api/users/${createdUser.id}`)
+            .delete('/api/users')
             .set('Authorization', `Bearer ${tokens.accessToken}`)
 
         expect(response.statusCode).toBe(200)

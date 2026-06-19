@@ -1,20 +1,30 @@
 import { TransactionNotFoundError } from '../../errors/transaction.js'
+import { ForbiddenError } from '../../errors/user.js'
 
 export class UpdateTransactionUseCase {
-    constructor(updateTransactionRepository) {
+    constructor(getTransactionByIdRepository, updateTransactionRepository) {
+        this.getTransactionByIdRepository = getTransactionByIdRepository
         this.updateTransactionRepository = updateTransactionRepository
     }
 
     async execute(transactionId, params) {
-        const transaction = await this.updateTransactionRepository.execute(
-            transactionId,
-            params,
-        )
+        const transaction =
+            await this.getTransactionByIdRepository.execute(transactionId)
 
         if (!transaction) {
             throw new TransactionNotFoundError(transactionId)
         }
 
-        return transaction
+        if (transaction.user_id !== params.user_id) {
+            throw new ForbiddenError()
+        }
+
+        const updatedTransaction =
+            await this.updateTransactionRepository.execute(
+                transactionId,
+                params,
+            )
+
+        return updatedTransaction
     }
 }

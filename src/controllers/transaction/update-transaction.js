@@ -1,5 +1,6 @@
 import { updateTransactionSchema } from '../../schemas/transaction.js'
 import { TransactionNotFoundError } from '../../errors/transaction.js'
+import { ForbiddenError } from '../../errors/user.js'
 import {
     badRequest,
     checkIfIdIsValid,
@@ -7,6 +8,7 @@ import {
     notFound,
     ok,
     serverError,
+    forbidden,
 } from '../helpers/index.js'
 
 import { z } from 'zod'
@@ -19,6 +21,7 @@ export class UpdateTransactionController {
     async execute(httpRequest) {
         try {
             const transactionId = httpRequest.params.id
+            const userId = httpRequest.params.user_id
 
             const idIsValid = checkIfIdIsValid(transactionId)
 
@@ -30,10 +33,15 @@ export class UpdateTransactionController {
 
             await updateTransactionSchema.parseAsync(params)
 
+            const updateParams = {
+                ...params,
+                user_id: userId,
+            }
+
             const updatedTransaction =
                 await this.updateTransactionUseCase.execute(
                     transactionId,
-                    params,
+                    updateParams,
                 )
 
             return ok({
@@ -41,6 +49,11 @@ export class UpdateTransactionController {
                 transaction: updatedTransaction,
             })
         } catch (error) {
+            if (error instanceof ForbiddenError) {
+                return forbidden({
+                    message: error.message,
+                })
+            }
             if (error instanceof TransactionNotFoundError) {
                 return notFound({
                     message: error.message,

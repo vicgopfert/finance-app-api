@@ -34,9 +34,23 @@ describe('Refresh Token Use Case', () => {
         const result = await sut.execute(refreshToken)
 
         expect(result).toEqual({
-            accessToken: 'any_access_token',
-            refreshToken: 'any_refresh_token',
+            tokens: {
+                accessToken: 'any_access_token',
+                refreshToken: 'any_refresh_token',
+            },
         })
+    })
+
+    it('should throw UnauthorizedError if TokenVerifierAdapter returns falsy decoded token', () => {
+        const { sut, tokenVerifierAdapter } = makeSut()
+
+        import.meta.jest
+            .spyOn(tokenVerifierAdapter, 'execute')
+            .mockReturnValue(null)
+
+        expect(() => sut.execute('any_refresh_token')).toThrow(
+            UnauthorizedError,
+        )
     })
 
     it('should throw if TokenVerifierAdapter throws', () => {

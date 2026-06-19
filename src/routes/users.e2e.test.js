@@ -115,6 +115,37 @@ describe('User Routes E2E Tests', () => {
         expect(response.statusCode).toBe(401)
     })
 
+    it('POST /api/users/refresh-token - should return 200 and new tokens when refresh token is valid', async () => {
+        const {
+            body: { tokens },
+        } = await request(app)
+            .post('/api/users')
+            .send({
+                ...user,
+                id: undefined,
+            })
+
+        const response = await request(app)
+            .post('/api/users/refresh-token')
+            .send({
+                refreshToken: tokens.refreshToken,
+            })
+
+        expect(response.statusCode).toBe(200)
+        expect(response.body.tokens.accessToken).toBeDefined()
+        expect(response.body.tokens.refreshToken).toBeDefined()
+    })
+
+    it('POST /api/users/refresh-token - should return 401 when refresh token is invalid', async () => {
+        const response = await request(app)
+            .post('/api/users/refresh-token')
+            .send({
+                refreshToken: 'invalid-refresh-token',
+            })
+
+        expect(response.statusCode).toBe(401)
+    })
+
     it('GET /api/users - should return 200 and user data successfully', async () => {
         const {
             body: { user: createdUser, tokens },

@@ -19,6 +19,7 @@ describe('Update Transaction Controller', () => {
     const httpRequest = {
         params: {
             id: faker.string.uuid(),
+            user_id: transaction.user_id,
         },
         body: {
             name: faker.commerce.productName(),
@@ -182,9 +183,9 @@ describe('Update Transaction Controller', () => {
 
         await sut.execute(httpRequest)
 
-        expect(executeSpy).toHaveBeenCalledWith(
-            httpRequest.params.id,
-            httpRequest.body,
-        )
+        expect(executeSpy).toHaveBeenCalledWith(httpRequest.params.id, {
+            ...httpRequest.body,
+            user_id: httpRequest.params.user_id,
+        })
     })
 })

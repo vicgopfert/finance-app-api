@@ -1,9 +1,16 @@
 import { UpdateTransactionUseCase } from './update-transaction.js'
 import { TransactionNotFoundError } from '../../errors/transaction.js'
+import { ForbiddenError } from '../../errors/user.js'
 import { faker } from '@faker-js/faker'
 import { transaction } from '../../tests/index.js'
 
 describe('Update Transaction Use Case', () => {
+    class GetTransactionByIdRepositoryStub {
+        async execute() {
+            return transaction
+        }
+    }
+
     class UpdateTransactionRepositoryStub {
         async execute() {
             return transaction
@@ -11,17 +18,24 @@ describe('Update Transaction Use Case', () => {
     }
 
     const makeSut = () => {
+        const getTransactionByIdRepository =
+            new GetTransactionByIdRepositoryStub()
         const updateTransactionRepository =
             new UpdateTransactionRepositoryStub()
-        const sut = new UpdateTransactionUseCase(updateTransactionRepository)
+        const sut = new UpdateTransactionUseCase(
+            getTransactionByIdRepository,
+            updateTransactionRepository,
+        )
 
         return {
+            getTransactionByIdRepository,
             sut,
             updateTransactionRepository,
         }
     }
 
     const updateTransactionParams = {
+        user_id: transaction.user_id,
         name: faker.commerce.productName(),
         date: faker.date.recent().toISOString(),
         type: 'EARNING',
@@ -56,11 +70,11 @@ describe('Update Transaction Use Case', () => {
         )
     })
 
-    it('should throw TransactionNotFoundError if UpdateTransactionRepository returns null', async () => {
-        const { sut, updateTransactionRepository } = makeSut()
+    it('should throw TransactionNotFoundError if GetTransactionByIdRepository returns null', async () => {
+        const { sut, getTransactionByIdRepository } = makeSut()
 
         import.meta.jest
-            .spyOn(updateTransactionRepository, 'execute')
+            .spyOn(getTransactionByIdRepository, 'execute')
             .mockResolvedValueOnce(null)
 
         const transactionId = faker.string.uuid()
@@ -84,5 +98,16 @@ describe('Update Transaction Use Case', () => {
         )
 
         await expect(promise).rejects.toThrow(new Error())
+    })
+
+    it('should throw ForbiddenError if transaction belongs to another user', async () => {
+        const { sut } = makeSut()
+
+        const promise = sut.execute(faker.string.uuid(), {
+            ...updateTransactionParams,
+            user_id: faker.string.uuid(),
+        })
+
+        await expect(promise).rejects.toThrow(new ForbiddenError())
     })
 })

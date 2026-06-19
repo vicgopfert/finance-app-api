@@ -6,7 +6,7 @@ import { TransactionType } from '@prisma/client'
 describe('Transaction Routes E2E Tests', () => {
     it('POST /api/transactions - should return 201 when creating a transaction successfully', async () => {
         const {
-            body: { user: createdUser },
+            body: { user: createdUser, tokens },
         } = await request(app)
             .post('/api/users')
             .send({
@@ -16,9 +16,9 @@ describe('Transaction Routes E2E Tests', () => {
 
         const response = await request(app)
             .post('/api/transactions')
+            .set('Authorization', `Bearer ${tokens.accessToken}`)
             .send({
                 ...transaction,
-                user_id: createdUser.id,
                 id: undefined,
             })
 
@@ -30,7 +30,7 @@ describe('Transaction Routes E2E Tests', () => {
         )
     })
 
-    it('POST /api/transactions - should return 404 when creating a transaction for a non-existent user', async () => {
+    it('POST /api/transactions - should return 401 when token is not provided', async () => {
         const response = await request(app)
             .post('/api/transactions')
             .send({
@@ -38,12 +38,12 @@ describe('Transaction Routes E2E Tests', () => {
                 id: undefined,
             })
 
-        expect(response.status).toBe(404)
+        expect(response.status).toBe(401)
     })
 
-    it('GET /api/transaction?userId - should return 200 when fetching transactions successfully', async () => {
+    it('GET /api/transactions - should return 200 when fetching transactions successfully', async () => {
         const {
-            body: { user: createdUser },
+            body: { tokens },
         } = await request(app)
             .post('/api/users')
             .send({
@@ -55,15 +55,15 @@ describe('Transaction Routes E2E Tests', () => {
             body: { transaction: createdTransaction },
         } = await request(app)
             .post('/api/transactions')
+            .set('Authorization', `Bearer ${tokens.accessToken}`)
             .send({
                 ...transaction,
-                user_id: createdUser.id,
                 id: undefined,
             })
 
-        const response = await request(app).get(
-            `/api/transactions?userId=${createdUser.id}`,
-        )
+        const response = await request(app)
+            .get('/api/transactions')
+            .set('Authorization', `Bearer ${tokens.accessToken}`)
 
         expect(response.status).toBe(200)
         expect(response.body).toBeInstanceOf(Array)
@@ -71,17 +71,15 @@ describe('Transaction Routes E2E Tests', () => {
         expect(response.body[0]).toEqual(createdTransaction)
     })
 
-    it('GET /api/transaction?userId - should return 404 when fetching transactions from a non-existent user', async () => {
-        const response = await request(app).get(
-            `/api/transactions?userId=${transaction.user_id}`,
-        )
+    it('GET /api/transactions - should return 401 when token is not provided', async () => {
+        const response = await request(app).get('/api/transactions')
 
-        expect(response.status).toBe(404)
+        expect(response.status).toBe(401)
     })
 
     it('PATCH /api/transactions/:id - should return 200 when updating a transaction successfully', async () => {
         const {
-            body: { user: createdUser },
+            body: { tokens },
         } = await request(app)
             .post('/api/users')
             .send({
@@ -93,14 +91,15 @@ describe('Transaction Routes E2E Tests', () => {
             body: { transaction: createdTransaction },
         } = await request(app)
             .post('/api/transactions')
+            .set('Authorization', `Bearer ${tokens.accessToken}`)
             .send({
                 ...transaction,
-                user_id: createdUser.id,
                 id: undefined,
             })
 
         const response = await request(app)
             .patch(`/api/transactions/${createdTransaction.id}`)
+            .set('Authorization', `Bearer ${tokens.accessToken}`)
             .send({
                 amount: 200,
                 type: TransactionType.INVESTMENT,
@@ -112,8 +111,18 @@ describe('Transaction Routes E2E Tests', () => {
     })
 
     it('PATCH /api/transactions/:id - should return 404 when updating a non-existing transaction', async () => {
+        const {
+            body: { tokens },
+        } = await request(app)
+            .post('/api/users')
+            .send({
+                ...user,
+                id: undefined,
+            })
+
         const response = await request(app)
             .patch(`/api/transactions/${transaction.id}`)
+            .set('Authorization', `Bearer ${tokens.accessToken}`)
             .send({
                 amount: 200,
                 type: TransactionType.INVESTMENT,
@@ -122,9 +131,49 @@ describe('Transaction Routes E2E Tests', () => {
         expect(response.status).toBe(404)
     })
 
+    it('PATCH /api/transactions/:id - should return 403 when updating another user transaction', async () => {
+        const {
+            body: { tokens: ownerTokens },
+        } = await request(app)
+            .post('/api/users')
+            .send({
+                ...user,
+                id: undefined,
+            })
+
+        const {
+            body: { tokens: anotherUserTokens },
+        } = await request(app)
+            .post('/api/users')
+            .send({
+                ...user,
+                id: undefined,
+                email: 'another-user@example.com',
+            })
+
+        const {
+            body: { transaction: createdTransaction },
+        } = await request(app)
+            .post('/api/transactions')
+            .set('Authorization', `Bearer ${ownerTokens.accessToken}`)
+            .send({
+                ...transaction,
+                id: undefined,
+            })
+
+        const response = await request(app)
+            .patch(`/api/transactions/${createdTransaction.id}`)
+            .set('Authorization', `Bearer ${anotherUserTokens.accessToken}`)
+            .send({
+                amount: 200,
+            })
+
+        expect(response.status).toBe(403)
+    })
+
     it('DELETE /api/transactions/:id - should return 200 when deleting a transaction successfully', async () => {
         const {
-            body: { user: createdUser },
+            body: { tokens },
         } = await request(app)
             .post('/api/users')
             .send({
@@ -136,24 +185,33 @@ describe('Transaction Routes E2E Tests', () => {
             body: { transaction: createdTransaction },
         } = await request(app)
             .post('/api/transactions')
+            .set('Authorization', `Bearer ${tokens.accessToken}`)
             .send({
                 ...transaction,
-                user_id: createdUser.id,
                 id: undefined,
             })
 
-        const response = await request(app).delete(
-            `/api/transactions/${createdTransaction.id}`,
-        )
+        const response = await request(app)
+            .delete(`/api/transactions/${createdTransaction.id}`)
+            .set('Authorization', `Bearer ${tokens.accessToken}`)
 
         expect(response.status).toBe(200)
         expect(response.body.transaction.id).toBe(createdTransaction.id)
     })
 
     it('DELETE /api/transactions/:id - should return 404 when deleting a non-existing transaction', async () => {
-        const response = await request(app).delete(
-            `/api/transactions/${transaction.id}`,
-        )
+        const {
+            body: { tokens },
+        } = await request(app)
+            .post('/api/users')
+            .send({
+                ...user,
+                id: undefined,
+            })
+
+        const response = await request(app)
+            .delete(`/api/transactions/${transaction.id}`)
+            .set('Authorization', `Bearer ${tokens.accessToken}`)
 
         expect(response.status).toBe(404)
     })

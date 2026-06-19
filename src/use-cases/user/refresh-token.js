@@ -17,7 +17,11 @@ export class RefreshTokenUseCase {
                 throw new UnauthorizedError()
             }
 
-            return this.tokensGeneratorAdapter.execute(decodedToken.userId)
+            const tokens = this.tokensGeneratorAdapter.execute(
+                decodedToken.userId,
+            )
+
+            return { tokens: tokens }
         } catch (error) {
             console.error(error)
             throw new UnauthorizedError()

@@ -15,7 +15,7 @@ export class RefreshTokenController {
 
             await refreshTokenSchema.parseAsync(params)
 
-            const response = this.refreshTokenUseCase.execute(
+            const response = await this.refreshTokenUseCase.execute(
                 params.refreshToken,
             )
 

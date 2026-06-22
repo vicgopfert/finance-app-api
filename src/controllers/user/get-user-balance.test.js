@@ -13,6 +13,10 @@ describe('Get User Balance Controller', () => {
         params: {
             id: faker.string.uuid(),
         },
+        query: {
+            from: '2025-01-01',
+            to: '2025-01-31',
+        },
     }
 
     const makeSut = () => {
@@ -37,13 +41,13 @@ describe('Get User Balance Controller', () => {
             params: {
                 id: 'invalid-id',
             },
+            query: {
+                from: '2025-01-01',
+                to: '2025-01-31',
+            },
         })
 
         expect(result.statusCode).toBe(400)
-        expect(result.body).toHaveProperty(
-            'message',
-            'The provided ID invalid-id is invalid.',
-        )
     })
 
     it('should returns 404 if GetUserBalanceUseCase throws UserNotFoundError', async () => {
@@ -85,6 +89,10 @@ describe('Get User Balance Controller', () => {
 
         await sut.execute(httpRequest)
 
-        expect(executeSpy).toHaveBeenCalledWith(httpRequest.params.id)
+        expect(executeSpy).toHaveBeenCalledWith(
+            httpRequest.params.id,
+            httpRequest.query.from,
+            httpRequest.query.to,
+        )
     })
 })

@@ -46,7 +46,7 @@ describe('Transaction Routes E2E Tests', () => {
 
     it('GET /api/transactions - should return 200 when fetching transactions successfully', async () => {
         const {
-            body: { tokens },
+            body: { user: createdUser, tokens },
         } = await request(app)
             .post('/api/users')
             .send({
@@ -61,6 +61,8 @@ describe('Transaction Routes E2E Tests', () => {
             .set('Authorization', `Bearer ${tokens.accessToken}`)
             .send({
                 ...transaction,
+                date: new Date(from),
+                user_id: createdUser.id,
                 id: undefined,
             })
 

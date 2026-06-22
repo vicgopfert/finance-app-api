@@ -639,6 +639,21 @@
                     "example": "1000.0",
                     "description": "Total investments of the user"
                 },
+                "earningsPercentage": {
+                    "type": "string",
+                    "example": "63.0",
+                    "description": "Percentage of earnings relative to total transactions"
+                },
+                "expensesPercentage": {
+                    "type": "string",
+                    "example": "25.0",
+                    "description": "Percentage of expenses relative to total transactions"
+                },
+                "investmentsPercentage": {
+                    "type": "string",
+                    "example": "12.0",
+                    "description": "Percentage of investments relative to total transactions"
+                },
                 "balance": {
                     "type": "string",
                     "example": "2000.0",

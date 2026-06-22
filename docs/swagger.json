@@ -273,6 +273,30 @@
                 "summary": "Get authenticated user balance",
                 "description": "Endpoint to retrieve the authenticated user's balance information.",
                 "tags": ["Users"],
+                "parameters": [
+                    {
+                        "name": "from",
+                        "in": "query",
+                        "required": true,
+                        "description": "Start date for filtering transactions (format: YYYY-MM-DD)",
+                        "schema": {
+                            "type": "string",
+                            "format": "date",
+                            "example": "2025-01-01"
+                        }
+                    },
+                    {
+                        "name": "to",
+                        "in": "query",
+                        "required": true,
+                        "description": "End date for filtering transactions (format: YYYY-MM-DD)",
+                        "schema": {
+                            "type": "string",
+                            "format": "date",
+                            "example": "2025-01-31"
+                        }
+                    }
+                ],
                 "security": [
                     {
                         "BearerAuth": []

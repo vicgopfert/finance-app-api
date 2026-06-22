@@ -1,3 +1,5 @@
+import { z } from 'zod'
+
 import { updateTransactionSchema } from '../../schemas/transaction.js'
 import { TransactionNotFoundError } from '../../errors/transaction.js'
 import { ForbiddenError } from '../../errors/user.js'
@@ -10,8 +12,6 @@ import {
     serverError,
     forbidden,
 } from '../helpers/index.js'
-
-import { z } from 'zod'
 
 export class UpdateTransactionController {
     constructor(updateTransactionUseCase) {

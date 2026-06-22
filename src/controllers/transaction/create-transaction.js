@@ -1,8 +1,8 @@
+import { z } from 'zod'
+
 import { UserNotFoundError } from '../../errors/user.js'
 import { createTransactionSchema } from '../../schemas/transaction.js'
 import { badRequest, created, notFound, serverError } from '../helpers/index.js'
-
-import { z } from 'zod'
 
 export class CreateTransactionController {
     constructor(createTransactionUseCase) {

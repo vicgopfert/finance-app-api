@@ -38,3 +38,24 @@ export const updateTransactionSchema = createTransactionSchema
     .omit({ user_id: true })
     .partial()
     .strict('Some provided field is not allowed to be updated')
+
+export const getTransactionsByUserIdSchema = z.object({
+    user_id: z
+        .string({
+            message: 'The field user_id is not provided.',
+        })
+        .min(1, { message: 'User ID is required' })
+        .uuid({ message: 'Invalid user ID format' }),
+    from: z
+        .string({
+            message: 'The field from is not provided.',
+        })
+        .min(1, { message: 'From date is required' })
+        .date({ message: 'Invalid date format' }),
+    to: z
+        .string({
+            message: 'The field to is not provided.',
+        })
+        .min(1, { message: 'To date is required' })
+        .date({ message: 'Invalid date format' }),
+})

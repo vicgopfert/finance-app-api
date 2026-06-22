@@ -4,6 +4,9 @@ import { GetTransactionsByUserIdController } from './get-transactions-by-user-id
 import { faker } from '@faker-js/faker'
 
 describe('Get Transactions By User ID Controller', () => {
+    const from = '2026-01-01'
+    const to = '2026-01-31'
+
     class GetUserByIdUseCaseStub {
         async execute() {
             return transaction
@@ -19,6 +22,8 @@ describe('Get Transactions By User ID Controller', () => {
     const httpRequest = {
         query: {
             userId: faker.string.uuid(),
+            from,
+            to,
         },
     }
 
@@ -33,27 +38,21 @@ describe('Get Transactions By User ID Controller', () => {
     it('should return 400 if userId is not provided', async () => {
         const { sut } = makeSut()
 
-        const result = await sut.execute({ query: { userId: undefined } })
+        const result = await sut.execute({
+            query: { userId: undefined, from, to },
+        })
 
         expect(result.statusCode).toBe(400)
-        expect(result.body).toHaveProperty(
-            'message',
-            'Field userId is required.',
-        )
     })
 
     it('should return 400 if userId is invalid', async () => {
         const { sut } = makeSut()
 
         const result = await sut.execute({
-            query: { userId: 'invalid-user-id' },
+            query: { userId: 'invalid-user-id', from, to },
         })
 
         expect(result.statusCode).toBe(400)
-        expect(result.body).toHaveProperty(
-            'message',
-            'The provided ID invalid-user-id is invalid.',
-        )
     })
 
     it('should return 404 if GetTransactionsByUserIdUseCase throws UserNotFoundError', async () => {

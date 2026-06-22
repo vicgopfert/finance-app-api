@@ -34,6 +34,27 @@ export const updateUserSchema = createUserSchema
     .partial()
     .strict('Some provided field is not allowed to be updated')
 
+export const getUserBalanceSchema = z.object({
+    user_id: z
+        .string({
+            message: 'The field user_id is not provided.',
+        })
+        .min(1, { message: 'User ID is required' })
+        .uuid({ message: 'Invalid user ID format' }),
+    from: z
+        .string({
+            message: 'The field from is not provided.',
+        })
+        .min(1, { message: 'From date is required' })
+        .date({ message: 'Invalid date format' }),
+    to: z
+        .string({
+            message: 'The field to is not provided.',
+        })
+        .min(1, { message: 'To date is required' })
+        .date({ message: 'Invalid date format' }),
+})
+
 export const loginUserSchema = z.object({
     email: z
         .string({

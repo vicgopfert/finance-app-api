@@ -9,7 +9,7 @@ import { auth } from '../middlewares/auth.js'
 
 export const transactionsRouter = Router()
 
-transactionsRouter.get('/', auth, async (req, res) => {
+transactionsRouter.get('/me', auth, async (req, res) => {
     const getTransactionsByUserIdController =
         generateGetTransactionsByUserIdController()
     const { statusCode, body } =
@@ -25,7 +25,7 @@ transactionsRouter.get('/', auth, async (req, res) => {
     res.status(statusCode).json(body)
 })
 
-transactionsRouter.post('/', auth, async (req, res) => {
+transactionsRouter.post('/me', auth, async (req, res) => {
     const createTransactionController = generateCreateTransactionController()
     const { statusCode, body } = await createTransactionController.execute({
         ...req,
@@ -37,7 +37,7 @@ transactionsRouter.post('/', auth, async (req, res) => {
     res.status(statusCode).json(body)
 })
 
-transactionsRouter.patch('/:id', auth, async (req, res) => {
+transactionsRouter.patch('/me/:id', auth, async (req, res) => {
     const updateTransactionController = generateUpdateTransactionController()
     const { statusCode, body } = await updateTransactionController.execute({
         ...req,
@@ -49,7 +49,7 @@ transactionsRouter.patch('/:id', auth, async (req, res) => {
     res.status(statusCode).json(body)
 })
 
-transactionsRouter.delete('/:id', auth, async (req, res) => {
+transactionsRouter.delete('/me/:id', auth, async (req, res) => {
     const deleteTransactionController = generateDeleteTransactionController()
     const { statusCode, body } = await deleteTransactionController.execute({
         ...req,

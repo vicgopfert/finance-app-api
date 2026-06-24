@@ -1,6 +1,9 @@
 import { z } from 'zod'
 
-import { EmailAlreadyInUseError, UserNotFoundError } from '../../errors/user.js'
+import {
+    EmailAlreadyInUseError,
+    UserNotFoundError,
+} from '../../errors/index.js'
 import { updateUserSchema } from '../../schemas/user.js'
 import {
     checkIfIdIsValid,

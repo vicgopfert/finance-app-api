@@ -1,6 +1,6 @@
 import { z } from 'zod'
 
-import { UserNotFoundError } from '../../errors/user.js'
+import { UserNotFoundError } from '../../errors/index.js'
 import { getTransactionsByUserIdSchema } from '../../schemas/transaction.js'
 import { notFound, ok, serverError, badRequest } from '../helpers/index.js'
 

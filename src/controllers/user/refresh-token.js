@@ -1,6 +1,6 @@
 import { z } from 'zod'
 
-import { UnauthorizedError } from '../../errors/user.js'
+import { UnauthorizedError } from '../../errors/index.js'
 import { refreshTokenSchema } from '../../schemas/user.js'
 import { ok, serverError, unauthorized, badRequest } from '../helpers/index.js'
 

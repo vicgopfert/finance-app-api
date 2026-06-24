@@ -5,7 +5,7 @@ import {
     notFound,
     invalidIdResponse,
 } from '../helpers/index.js'
-import { UserNotFoundError } from '../../errors/user.js'
+import { UserNotFoundError } from '../../errors/index.js'
 
 export class GetUserByIdController {
     constructor(getUserByIdUseCase) {

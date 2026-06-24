@@ -1,8 +1,7 @@
 import { z } from 'zod'
 
 import { updateTransactionSchema } from '../../schemas/transaction.js'
-import { TransactionNotFoundError } from '../../errors/transaction.js'
-import { ForbiddenError } from '../../errors/user.js'
+import { TransactionNotFoundError, ForbiddenError } from '../../errors/index.js'
 import {
     badRequest,
     checkIfIdIsValid,

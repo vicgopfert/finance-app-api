@@ -15,6 +15,7 @@ export class DeleteTransactionController {
     async execute(httpRequest) {
         try {
             const transactionId = httpRequest.params.id
+            const userId = httpRequest.params.user_id
 
             const idIsValid = checkIfIdIsValid(transactionId)
 
@@ -23,7 +24,10 @@ export class DeleteTransactionController {
             }
 
             const deletedTransaction =
-                await this.deleteTransactionUseCase.execute(transactionId)
+                await this.deleteTransactionUseCase.execute(
+                    transactionId,
+                    userId,
+                )
 
             return ok({
                 message: 'Transaction deleted successfully',

@@ -1,5 +1,6 @@
 import { DeleteTransactionController } from './delete-transaction'
 import { TransactionNotFoundError } from '../../errors/transaction.js'
+import { ForbiddenError } from '../../errors/user.js'
 import { transaction, user } from '../../tests/index.js'
 
 describe('Delete Transaction Controller', () => {
@@ -68,6 +69,18 @@ describe('Delete Transaction Controller', () => {
             'message',
             `Transaction with id ${httpRequest.params.id} not found.`,
         )
+    })
+
+    it('should return 403 if DeleteTransactionUseCase throws ForbiddenError', async () => {
+        const { sut, deleteTransactionUseCase } = makeSut()
+
+        import.meta.jest
+            .spyOn(deleteTransactionUseCase, 'execute')
+            .mockRejectedValueOnce(new ForbiddenError())
+
+        const result = await sut.execute(httpRequest)
+
+        expect(result.statusCode).toBe(403)
     })
 
     it('should return 500 if DeleteTransactionUseCase throws an unexpected error', async () => {

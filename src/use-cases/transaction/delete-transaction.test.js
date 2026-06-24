@@ -1,28 +1,60 @@
 import { DeleteTransactionUseCase } from './delete-transaction.js'
 import { TransactionNotFoundError } from '../../errors/transaction.js'
+import { ForbiddenError } from '../../errors/user.js'
 import { faker } from '@faker-js/faker'
 import { transaction } from '../../tests/index.js'
 
 describe('Delete Transaction Use Case', () => {
+    const user_id = faker.string.uuid()
+
+    class GetTransactionByIdRepositoryStub {
+        async execute() {
+            return { ...transaction, user_id }
+        }
+    }
     class DeleteTransactionRepositoryStub {
         async execute() {
-            return transaction
+            return { ...transaction, user_id }
         }
     }
 
     const makeSut = () => {
+        const getTransactionByIdRepository =
+            new GetTransactionByIdRepositoryStub()
         const deleteTransactionRepository =
             new DeleteTransactionRepositoryStub()
-        const sut = new DeleteTransactionUseCase(deleteTransactionRepository)
-        return { sut, deleteTransactionRepository }
+        const sut = new DeleteTransactionUseCase(
+            getTransactionByIdRepository,
+            deleteTransactionRepository,
+        )
+        return {
+            sut,
+            getTransactionByIdRepository,
+            deleteTransactionRepository,
+        }
     }
 
     it('should delete a transaction successfully', async () => {
         const { sut } = makeSut()
 
-        const result = await sut.execute(faker.string.uuid())
+        const transactionId = faker.string.uuid()
+        const result = await sut.execute(transactionId, user_id)
 
-        expect(result).toEqual(transaction)
+        expect(result).toEqual({ ...transaction, user_id })
+    })
+
+    it('should call GetTransactionByIdRepository with correct params', async () => {
+        const { sut, getTransactionByIdRepository } = makeSut()
+
+        const getTransactionByIdSpy = import.meta.jest.spyOn(
+            getTransactionByIdRepository,
+            'execute',
+        )
+
+        const transactionId = faker.string.uuid()
+        await sut.execute(transactionId, user_id)
+
+        expect(getTransactionByIdSpy).toHaveBeenCalledWith(transactionId)
     })
 
     it('should call DeleteTransactionRepository with correct params', async () => {
@@ -34,24 +66,45 @@ describe('Delete Transaction Use Case', () => {
         )
 
         const transactionId = faker.string.uuid()
-        await sut.execute(transactionId)
+        await sut.execute(transactionId, user_id)
 
         expect(deleteTransactionSpy).toHaveBeenCalledWith(transactionId)
     })
 
-    it('should throw TransactionNotFoundError if DeleteTransactionRepository returns null', async () => {
-        const { sut, deleteTransactionRepository } = makeSut()
+    it('should throw TransactionNotFoundError if transaction does not exist', async () => {
+        const { sut, getTransactionByIdRepository } = makeSut()
 
         import.meta.jest
-            .spyOn(deleteTransactionRepository, 'execute')
+            .spyOn(getTransactionByIdRepository, 'execute')
             .mockResolvedValueOnce(null)
 
         const transactionId = faker.string.uuid()
-        const promise = sut.execute(transactionId)
+        const promise = sut.execute(transactionId, user_id)
 
         await expect(promise).rejects.toThrow(
             new TransactionNotFoundError(transactionId),
         )
+    })
+
+    it('should throw ForbiddenError if transaction does not belong to user', async () => {
+        const { sut } = makeSut()
+
+        const transactionId = faker.string.uuid()
+        const promise = sut.execute(transactionId, faker.string.uuid())
+
+        await expect(promise).rejects.toThrow(new ForbiddenError())
+    })
+
+    it('should throw if GetTransactionByIdRepository throws', async () => {
+        const { sut, getTransactionByIdRepository } = makeSut()
+
+        import.meta.jest
+            .spyOn(getTransactionByIdRepository, 'execute')
+            .mockRejectedValueOnce(new Error())
+
+        const promise = sut.execute(faker.string.uuid(), user_id)
+
+        await expect(promise).rejects.toThrow(new Error())
     })
 
     it('should throw if DeleteTransactionRepository throws', async () => {
@@ -59,9 +112,9 @@ describe('Delete Transaction Use Case', () => {
 
         import.meta.jest
             .spyOn(deleteTransactionRepository, 'execute')
-            .mockRejectedValue(new Error())
+            .mockRejectedValueOnce(new Error())
 
-        const promise = sut.execute(faker.string.uuid())
+        const promise = sut.execute(faker.string.uuid(), user_id)
 
         await expect(promise).rejects.toThrow(new Error())
     })

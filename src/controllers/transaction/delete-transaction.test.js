@@ -1,6 +1,6 @@
 import { DeleteTransactionController } from './delete-transaction'
 import { TransactionNotFoundError } from '../../errors/transaction.js'
-import { transaction } from '../../tests/index.js'
+import { transaction, user } from '../../tests/index.js'
 
 describe('Delete Transaction Controller', () => {
     class DeleteTransactionUseCaseStub {
@@ -12,6 +12,7 @@ describe('Delete Transaction Controller', () => {
     const httpRequest = {
         params: {
             id: transaction.id,
+            user_id: user.id,
         },
     }
 
@@ -91,6 +92,9 @@ describe('Delete Transaction Controller', () => {
 
         await sut.execute(httpRequest)
 
-        expect(executeSpy).toHaveBeenCalledWith(httpRequest.params.id)
+        expect(executeSpy).toHaveBeenCalledWith(
+            httpRequest.params.id,
+            httpRequest.params.user_id,
+        )
     })
 })

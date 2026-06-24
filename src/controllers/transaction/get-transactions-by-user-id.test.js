@@ -67,10 +67,7 @@ describe('Get Transactions By User ID Controller', () => {
         const result = await sut.execute(httpRequest)
 
         expect(result.statusCode).toBe(404)
-        expect(result.body).toHaveProperty(
-            'message',
-            `User with id ${httpRequest.query.userId} not found.`,
-        )
+        expect(result.body).toHaveProperty('message', `User not found.`)
     })
 
     it('should return 500 if GetUserByIdUseCase throws an unexpected error', async () => {

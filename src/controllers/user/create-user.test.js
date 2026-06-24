@@ -142,7 +142,7 @@ describe('Create User Controller', () => {
         expect(result.statusCode).toBe(400)
         expect(result.body).toHaveProperty(
             'message',
-            `Email ${httpRequest.body.email} is already in use.`,
+            `Email is already in use.`,
         )
     })
 

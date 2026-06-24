@@ -240,10 +240,7 @@ describe('Create Transaction Controller', () => {
         const result = await sut.execute(httpRequest)
 
         expect(result.statusCode).toBe(404)
-        expect(result.body).toHaveProperty(
-            'message',
-            `User with id ${httpRequest.body.user_id} not found.`,
-        )
+        expect(result.body).toHaveProperty('message', 'User not found.')
     })
 
     it('should return 500 if CreateTransactionUseCase throws an unexpected error', async () => {

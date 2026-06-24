@@ -60,10 +60,7 @@ describe('Get User Balance Controller', () => {
         const result = await sut.execute(httpRequest)
 
         expect(result.statusCode).toBe(404)
-        expect(result.body).toHaveProperty(
-            'message',
-            `User with id ${httpRequest.params.id} not found.`,
-        )
+        expect(result.body).toHaveProperty('message', `User not found.`)
     })
 
     it('should returns 500 if GetUserBalanceUseCase throws an unexpected error', async () => {

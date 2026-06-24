@@ -70,10 +70,7 @@ describe('Update User Controller', () => {
         const result = await sut.execute(httpRequest)
 
         expect(result.statusCode).toBe(404)
-        expect(result.body).toHaveProperty(
-            'message',
-            `User with id ${httpRequest.params.id} not found.`,
-        )
+        expect(result.body).toHaveProperty('message', `User not found.`)
     })
 
     it('should return 400 if and invalid email is provided', async () => {
@@ -126,7 +123,7 @@ describe('Update User Controller', () => {
         expect(result.statusCode).toBe(400)
         expect(result.body).toHaveProperty(
             'message',
-            `Email ${httpRequest.body.email} is already in use.`,
+            `Email is already in use.`,
         )
     })
 

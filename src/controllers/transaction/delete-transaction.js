@@ -1,10 +1,12 @@
 import { TransactionNotFoundError } from '../../errors/transaction.js'
+import { ForbiddenError } from '../../errors/user.js'
 import {
     serverError,
     checkIfIdIsValid,
     invalidIdResponse,
     ok,
     notFound,
+    forbidden,
 } from '../helpers/index.js'
 
 export class DeleteTransactionController {
@@ -17,13 +19,10 @@ export class DeleteTransactionController {
             const transactionId = httpRequest.params.id
             const userId = httpRequest.params.user_id
 
-            const transactionIsValid = checkIfIdIsValid(transactionId)
-            const userIdIsValid = checkIfIdIsValid(userId)
+            const transactionIdIsValid = checkIfIdIsValid(transactionId)
 
-            if (!transactionIsValid || !userIdIsValid) {
-                return invalidIdResponse(
-                    !transactionIsValid ? transactionId : userId,
-                )
+            if (!transactionIdIsValid) {
+                return invalidIdResponse(transactionId)
             }
 
             const deletedTransaction =
@@ -39,6 +38,11 @@ export class DeleteTransactionController {
         } catch (error) {
             if (error instanceof TransactionNotFoundError) {
                 return notFound({
+                    message: error.message,
+                })
+            }
+            if (error instanceof ForbiddenError) {
+                return forbidden({
                     message: error.message,
                 })
             }

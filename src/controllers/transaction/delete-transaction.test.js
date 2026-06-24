@@ -41,6 +41,7 @@ describe('Delete Transaction Controller', () => {
         const result = await sut.execute({
             params: {
                 id: 'invalid-uuid',
+                user_id: user.id,
             },
         })
 

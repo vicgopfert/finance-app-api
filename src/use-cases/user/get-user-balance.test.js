@@ -1,5 +1,5 @@
 import { GetUserBalanceUseCase } from './get-user-balance.js'
-import { UserNotFoundError } from '../../errors/user.js'
+import { UserNotFoundError } from '../../errors/index.js'
 import { faker } from '@faker-js/faker'
 import { user, userBalance } from '../../tests/index.js'
 

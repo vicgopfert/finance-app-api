@@ -1,6 +1,5 @@
 import { DeleteTransactionController } from './delete-transaction'
-import { TransactionNotFoundError } from '../../errors/transaction.js'
-import { ForbiddenError } from '../../errors/user.js'
+import { TransactionNotFoundError, ForbiddenError } from '../../errors/index.js'
 import { transaction, user } from '../../tests/index.js'
 
 describe('Delete Transaction Controller', () => {

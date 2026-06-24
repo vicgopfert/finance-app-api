@@ -1,5 +1,5 @@
 import { GetTransactionsByUserIdUseCase } from './get-transactions-by-user-id.js'
-import { UserNotFoundError } from '../../errors/user.js'
+import { UserNotFoundError } from '../../errors/index.js'
 import { faker } from '@faker-js/faker'
 import { transaction, user } from '../../tests/index.js'
 

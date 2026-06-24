@@ -1,5 +1,8 @@
 import { UpdateUserUseCase } from './update-user.js'
-import { EmailAlreadyInUseError, UserNotFoundError } from '../../errors/user.js'
+import {
+    EmailAlreadyInUseError,
+    UserNotFoundError,
+} from '../../errors/index.js'
 import { faker } from '@faker-js/faker'
 import { user } from '../../tests/index.js'
 

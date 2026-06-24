@@ -1,5 +1,5 @@
 import { RefreshTokenController } from './refresh-token.js'
-import { UnauthorizedError } from '../../errors/user.js'
+import { UnauthorizedError } from '../../errors/index.js'
 
 describe('Refresh Token Controller', () => {
     class RefreshTokenUseCaseStub {

@@ -1,6 +1,6 @@
 import { faker } from '@faker-js/faker'
 import { GetUserByIdController } from './get-user-by-id.js'
-import { UserNotFoundError } from '../../errors/user.js'
+import { UserNotFoundError } from '../../errors/index.js'
 import { user } from '../../tests/index.js'
 
 describe('Get User By ID Controller', () => {

@@ -1,5 +1,5 @@
 import { LoginUserUseCase } from './login-user.js'
-import { UserNotFoundError, InvalidPasswordError } from '../../errors/user.js'
+import { UserNotFoundError, InvalidPasswordError } from '../../errors/index.js'
 import { user } from '../../tests/index.js'
 
 describe('Login User Use Case', () => {

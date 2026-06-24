@@ -1,5 +1,8 @@
 import { UpdateUserController } from './update-user.js'
-import { UserNotFoundError, EmailAlreadyInUseError } from '../../errors/user.js'
+import {
+    UserNotFoundError,
+    EmailAlreadyInUseError,
+} from '../../errors/index.js'
 import { faker } from '@faker-js/faker'
 import { user } from '../../tests/index.js'
 

@@ -1,5 +1,5 @@
 import { DeleteUserUseCase } from './delete-user.js'
-import { UserNotFoundError } from '../../errors/user.js'
+import { UserNotFoundError } from '../../errors/index.js'
 import { faker } from '@faker-js/faker'
 import { user } from '../../tests/index.js'
 

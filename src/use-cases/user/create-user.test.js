@@ -1,4 +1,4 @@
-import { EmailAlreadyInUseError } from '../../errors/user.js'
+import { EmailAlreadyInUseError } from '../../errors/index.js'
 import { user as fixtureUser } from '../../tests/index.js'
 import { CreateUserUseCase } from './create-user.js'
 

@@ -1,6 +1,5 @@
 import { DeleteTransactionUseCase } from './delete-transaction.js'
-import { TransactionNotFoundError } from '../../errors/transaction.js'
-import { ForbiddenError } from '../../errors/user.js'
+import { TransactionNotFoundError, ForbiddenError } from '../../errors/index.js'
 import { faker } from '@faker-js/faker'
 import { transaction } from '../../tests/index.js'
 

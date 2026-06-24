@@ -1,6 +1,6 @@
 import { faker } from '@faker-js/faker'
 import { DeleteUserController } from './delete-user.js'
-import { UserNotFoundError } from '../../errors/user.js'
+import { UserNotFoundError } from '../../errors/index.js'
 import { user } from '../../tests/index.js'
 
 describe('Delete User Controller', () => {

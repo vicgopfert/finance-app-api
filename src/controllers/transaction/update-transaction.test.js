@@ -1,5 +1,5 @@
-import { UpdateTransactionController } from './update-transaction'
-import { TransactionNotFoundError } from '../../errors/transaction'
+import { UpdateTransactionController } from './update-transaction.js'
+import { TransactionNotFoundError } from '../../errors/index.js'
 import { faker } from '@faker-js/faker'
 import { transaction } from '../../tests'
 

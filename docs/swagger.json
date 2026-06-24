@@ -721,7 +721,7 @@
             "properties": {
                 "message": {
                     "type": "string",
-                    "example": "User with id 123e4567-e89b-12d3-a456-426614174000 not found."
+                    "example": "User not found."
                 }
             }
         },

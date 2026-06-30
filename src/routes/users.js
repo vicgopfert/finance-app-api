@@ -5,9 +5,7 @@ import {
     generateGetUserBalanceController,
     generateGetUserByIdController,
     generateUpdateUserController,
-    generateLoginUserController,
-    generateRefreshTokenController,
-} from '../factories/controllers/user.js'
+} from '../factories/index.js'
 import { auth } from '../middlewares/auth.js'
 
 export const usersRouter = Router()
@@ -63,17 +61,5 @@ usersRouter.delete('/me', auth, async (req, res) => {
             id: req.user.userId,
         },
     })
-    res.status(statusCode).json(body)
-})
-
-usersRouter.post('/login', async (req, res) => {
-    const loginUserController = generateLoginUserController()
-    const { statusCode, body } = await loginUserController.execute(req)
-    res.status(statusCode).json(body)
-})
-
-usersRouter.post('/refresh-token', async (req, res) => {
-    const refreshTokenController = generateRefreshTokenController()
-    const { statusCode, body } = await refreshTokenController.execute(req)
     res.status(statusCode).json(body)
 })

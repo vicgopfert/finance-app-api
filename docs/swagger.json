@@ -250,11 +250,11 @@
                 }
             }
         },
-        "/api/users/login": {
+        "/api/auth/login": {
             "post": {
-                "summary": "Login User and retrieve tokens",
+                "summary": "Login user and retrieve tokens",
                 "description": "Endpoint to authenticate a user and retrieve access and refresh tokens.",
-                "tags": ["Users"],
+                "tags": ["Auth"],
                 "security": [],
                 "parameters": [
                     {
@@ -288,11 +288,11 @@
                 }
             }
         },
-        "/api/users/refresh-token": {
+        "/api/auth/refresh-token": {
             "post": {
                 "summary": "Refresh user tokens",
                 "description": "Endpoint to refresh the access and refresh tokens for an authenticated user.",
-                "tags": ["Users"],
+                "tags": ["Auth"],
                 "security": [],
                 "parameters": [
                     {

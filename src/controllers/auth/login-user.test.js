@@ -1,4 +1,4 @@
-import { LoginUserController } from './login-user'
+import { LoginUserController } from './login-user.js'
 import { user } from '../../tests/index.js'
 import { InvalidPasswordError, UserNotFoundError } from '../../errors/index.js'
 
@@ -69,6 +69,36 @@ describe('Login User Controller', () => {
         expect(response.statusCode).toBe(401)
         expect(response.body).toEqual({
             message: 'Invalid credentials.',
+        })
+    })
+
+    it('should return 400 if Zod validation fails', async () => {
+        const { sut } = makeSut()
+
+        const invalidHttpRequest = {
+            body: {
+                email: 'invalid-email',
+                password: '12345678',
+            },
+        }
+
+        const response = await sut.execute(invalidHttpRequest)
+
+        expect(response.statusCode).toBe(400)
+    })
+
+    it('should return 500 if use case throws', async () => {
+        const { sut, loginUserUseCase } = makeSut()
+
+        import.meta.jest
+            .spyOn(loginUserUseCase, 'execute')
+            .mockRejectedValueOnce(new Error('any_error'))
+
+        const response = await sut.execute(httpRequest)
+
+        expect(response.statusCode).toBe(500)
+        expect(response.body).toEqual({
+            message: 'Internal server error',
         })
     })
 })

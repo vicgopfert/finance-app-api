@@ -3,13 +3,13 @@ import {
     generateUpdateTransactionController,
     generateDeleteTransactionController,
     generateGetTransactionsByUserIdController,
-} from './transaction'
+} from './transaction.js'
 import {
     CreateTransactionController,
     UpdateTransactionController,
     DeleteTransactionController,
     GetTransactionsByUserIdController,
-} from '../../controllers'
+} from '../../controllers/index.js'
 
 describe('Transaction Controller Factories', () => {
     it('should return a valid CreateTransactionController instance', () => {

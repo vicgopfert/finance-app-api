@@ -4,14 +4,14 @@ import {
     generateGetUserBalanceController,
     generateUpdateUserController,
     generateDeleteUserController,
-} from './user'
+} from './user.js'
 import {
     CreateUserController,
     GetUserByIdController,
     GetUserBalanceController,
     UpdateUserController,
     DeleteUserController,
-} from '../../controllers'
+} from '../../controllers/index.js'
 
 describe('User Controller Factories', () => {
     it('should return a valid CreateUserController instance', () => {

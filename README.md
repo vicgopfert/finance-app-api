@@ -65,6 +65,7 @@ O projeto foi construído com foco em **separação de responsabilidades**, **te
 | ---------- | --- |
 | **jsonwebtoken** | Geração e verificação de access/refresh tokens |
 | **bcrypt** | Hash de senhas |
+| **cors** | Controle das origens autorizadas a consumir a API |
 | **Zod 4** | Validação de schemas de entrada (body, params e query) |
 | **validator** / **uuid** | Validações auxiliares e geração de IDs |
 
@@ -440,6 +441,7 @@ A API ficará disponível em `http://localhost:<PORT>` e a documentação em `ht
 | Variável | Descrição |
 | -------- | --------- |
 | `PORT` | Porta em que a API será exposta |
+| `CORS_ALLOWED_ORIGINS` | Origens autorizadas pelo CORS, separadas por vírgula (opcional) |
 | `POSTGRES_USER` | Usuário do PostgreSQL (Docker) |
 | `POSTGRES_PASSWORD` | Senha do PostgreSQL (Docker) |
 | `POSTGRES_DB` | Nome do banco (Docker) |
@@ -449,6 +451,16 @@ A API ficará disponível em `http://localhost:<PORT>` e a documentação em `ht
 | `DATABASE_URL` | String de conexão usada pelo Prisma |
 | `JWT_ACCESS_TOKEN_SECRET` | Secret usado para assinar o access token |
 | `JWT_REFRESH_TOKEN_SECRET` | Secret usado para assinar o refresh token |
+
+### CORS
+
+Para consumir a API a partir de um frontend, informe a origem dele em `CORS_ALLOWED_ORIGINS` (aceita várias, separadas por vírgula):
+
+```env
+CORS_ALLOWED_ORIGINS=http://localhost:5173,https://meu-frontend.com
+```
+
+Se a variável ficar vazia, a API reflete qualquer origem — conveniente para desenvolvimento, mas em produção defina a lista explicitamente. O CORS roda com `credentials: true`, por isso as origens são declaradas uma a uma em vez de `*` (o navegador rejeita o wildcard quando há credenciais).
 
 Os testes usam um arquivo `.env.test` separado (não versionado), apontando para o container `postgres-test` — assim a base de desenvolvimento nunca é afetada:
 

@@ -15,12 +15,15 @@ export class LoginUserController {
 
             await loginUserSchema.parseAsync(params)
 
-            const user = await this.loginUserUseCase.execute(
+            const loggedUser = await this.loginUserUseCase.execute(
                 params.email,
                 params.password,
             )
 
-            return ok(user)
+            return ok({
+                user: loggedUser.user,
+                tokens: loggedUser.tokens,
+            })
         } catch (error) {
             if (error instanceof z.ZodError) {
                 return badRequest({

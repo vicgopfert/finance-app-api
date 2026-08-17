@@ -27,9 +27,6 @@ export class LoginUserUseCase {
 
         const tokens = await this.tokensGeneratorAdapter.execute(user.id)
 
-        return {
-            ...user,
-            tokens,
-        }
+        return { user: user, tokens: tokens }
     }
 }

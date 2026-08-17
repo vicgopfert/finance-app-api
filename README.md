@@ -286,10 +286,12 @@ Base URL de produção: `https://finance-app-api-jyef.onrender.com`
 
 // Response 200
 {
-  "id": "9f1c...",
-  "first_name": "Victor",
-  "last_name": "Gopfert",
-  "email": "victor@email.com",
+  "user": {
+    "id": "9f1c...",
+    "first_name": "Victor",
+    "last_name": "Gopfert",
+    "email": "victor@email.com"
+  },
   "tokens": {
     "accessToken": "eyJhbGciOi...",
     "refreshToken": "eyJhbGciOi..."

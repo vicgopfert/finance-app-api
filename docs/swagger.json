@@ -38,7 +38,7 @@
                     }
                 ],
                 "responses": {
-                    "200": {
+                    "201": {
                         "description": "User created successfully",
                         "schema": {
                             "type": "object",
@@ -49,6 +49,9 @@
                                 },
                                 "user": {
                                     "$ref": "#/definitions/User"
+                                },
+                                "tokens": {
+                                    "$ref": "#/definitions/Tokens"
                                 }
                             }
                         }
@@ -267,10 +270,10 @@
                     }
                 ],
                 "responses": {
-                    "201": {
+                    "200": {
                         "description": "User authenticated successfully",
                         "schema": {
-                            "$ref": "#/definitions/UserWithToken"
+                            "$ref": "#/definitions/UserWithTokens"
                         }
                     },
                     "401": {
@@ -305,10 +308,15 @@
                     }
                 ],
                 "responses": {
-                    "201": {
+                    "200": {
                         "description": "Tokens generated successfully",
                         "schema": {
-                            "$ref": "#/definitions/Tokens"
+                            "type": "object",
+                            "properties": {
+                                "tokens": {
+                                    "$ref": "#/definitions/Tokens"
+                                }
+                            }
                         }
                     },
                     "401": {
@@ -590,25 +598,16 @@
                 }
             }
         },
-        "UserWithToken": {
-            "allOf": [
-                {
+        "UserWithTokens": {
+            "type": "object",
+            "properties": {
+                "user": {
                     "$ref": "#/definitions/User"
                 },
-                {
-                    "type": "object",
-                    "properties": {
-                        "accessToken": {
-                            "type": "string",
-                            "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
-                        },
-                        "refreshToken": {
-                            "type": "string",
-                            "example": "dGhpc2lzYXJlZnJlc2hhY2tlci..."
-                        }
-                    }
+                "tokens": {
+                    "$ref": "#/definitions/Tokens"
                 }
-            ]
+            }
         },
         "Tokens": {
             "type": "object",

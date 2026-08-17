@@ -67,12 +67,14 @@ describe('Login User Use Case', () => {
         )
     })
 
-    it('should return user with tokens if credentials are valid', async () => {
+    it('should return user and tokens separately if credentials are valid', async () => {
         const { sut } = makeSut()
         const result = await sut.execute('any_email', 'any_password')
 
-        expect(result).toHaveProperty('tokens')
-        expect(result.tokens).toHaveProperty('accessToken')
-        expect(result.tokens).toHaveProperty('refreshToken')
+        expect(result.user).toEqual(user)
+        expect(result.tokens).toEqual({
+            accessToken: 'any_access_token',
+            refreshToken: 'any_refresh_token',
+        })
     })
 })

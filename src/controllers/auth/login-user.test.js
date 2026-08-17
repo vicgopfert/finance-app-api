@@ -7,7 +7,7 @@ describe('Login User Controller', () => {
         class LoginUserUseCaseStub {
             async execute() {
                 return {
-                    ...user,
+                    user: user,
                     tokens: {
                         accessToken: 'any_access_token',
                         refreshToken: 'any_refresh_token',
@@ -35,7 +35,7 @@ describe('Login User Controller', () => {
 
         expect(response.statusCode).toBe(200)
         expect(response.body).toEqual({
-            ...user,
+            user: user,
             tokens: {
                 accessToken: 'any_access_token',
                 refreshToken: 'any_refresh_token',

@@ -3,7 +3,7 @@ import { app } from '../app'
 import { user } from '../tests/fixtures/user'
 
 describe('Auth Routes E2E Tests', () => {
-    it('POST /api/auth/login - should return 200 and tokens when user credentials are valid', async () => {
+    it('POST /api/auth/login - should return 200 with user and tokens when user credentials are valid', async () => {
         const {
             body: { user: createdUser },
         } = await request(app)
@@ -19,6 +19,8 @@ describe('Auth Routes E2E Tests', () => {
         })
 
         expect(response.statusCode).toBe(200)
+        expect(response.body.user.id).toBe(createdUser.id)
+        expect(response.body.user.email).toBe(createdUser.email)
         expect(response.body.tokens.accessToken).toBeDefined()
         expect(response.body.tokens.refreshToken).toBeDefined()
     })
